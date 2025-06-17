@@ -3,15 +3,16 @@ import db from '../db.js';
 export const getAllComments = async (req, res) => {
   try {
     let data;
-    if (req.body?.articleId) {
+    const articleId = req.query.articleId;
+    if (articleId) {
       const [data1, otherFields] = await db.query(
-        'SELECT * FROM comments inner join users on users.id=comments.userId where articleId = ?',
-        [req.body.articleId]
+        'SELECT comments.*, users.name as userName FROM comments inner join users on users.id=comments.userId where articleId = ?',
+        [articleId]
       );
       data = data1;
     } else {
       const [data2, otherFields] = await db.query(
-        'SELECT * FROM comments inner join users on users.id=comments.userId'
+        'SELECT comments.*, users.name as userName from comments inner join users on users.id=comments.userId'
       );
       data = data2;
     }

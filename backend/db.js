@@ -12,16 +12,3 @@ export default mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-
-// GET
-// const [data, fields] = await db.query('SELECT * FROM users');
-
-// INSERT
-// const sql = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-// const [result] = await db.query(sql, [name, email, password]);
-// console.log('Insert thành công, ID mới là:', result.insertId);
-
-// UPDATE
-// const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
-// const [result] = await db.query(sql, [name, email, id]);
-// console.log('Số dòng bị ảnh hưởng:', result.affectedRows);
