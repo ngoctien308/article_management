@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sửa bài viết</title>
+    <title>Tạo bài viết</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -105,6 +105,7 @@
         const loadCategories = async (selectedId) => {
             const res = await fetch('http://localhost:3000/api/categories');
             const { categories } = await res.json();
+
             const select = document.getElementById('categoryId');
             categories.forEach(c => {
                 const opt = document.createElement('option');
