@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>Danh sách bài viết</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         .article-card {
             border-radius: 15px;
@@ -24,13 +26,21 @@
 </head>
 
 <body>
+    <!-- Header -->
     <nav class="navbar navbar-expand-lg px-4" style='background:rgb(16, 58, 158);'>
-        <div class="container-fluid">
-            <span class="navbar-brand" style="color: whitesmoke">📰 Article App</span>
-            <div class="ms-auto d-flex align-items-center text-white">
-                <span id="user-info" class="me-3"></span>
-                <button onclick="signOut()" class="btn btn-outline-light btn-sm">Đăng xuất</button>
-            </div>
+        <a class="navbar-brand" href="?controller=article&action=index" style="color: whitesmoke">📰 Article App</a>
+        <div class="ms-auto dropdown">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userMenu" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                👤 <span id="username">User</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                <li><a class="dropdown-item" href="?controller=article&action=myArticles">📄 Bài viết của tôi</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="signOut()">🚪 Đăng xuất</a></li>
+            </ul>
         </div>
     </nav>
     <div class="container py-5">
@@ -86,7 +96,7 @@
                                     🏷 ${article.categoryName}
                                 </div>
                             </div>
-                            <a href='?controller=article&action=detail' class='btn btn-primary'>Xem chi tiết</a>
+                            <a href='?controller=article&action=detail&id=${article.id}' class='btn btn-primary'>Xem chi tiết</a>
                         </div>
                         `;
                     container.appendChild(card);
@@ -108,7 +118,7 @@
                 });
                 const finalRes = await res.json();
                 const user = await finalRes?.user[0];
-                document.getElementById('user-info').textContent = `👋 Xin chào, ${user?.name.toUpperCase()}`;
+                document.getElementById('username').textContent = `👋 Xin chào, ${user?.name.toUpperCase()}`;
             } catch (err) {
                 console.error('Lỗi khi fetch user:', err);
             }

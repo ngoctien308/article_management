@@ -13,13 +13,9 @@ export const getAllArticles = async (req, res) => {
 
 export const getArticle = async (req, res) => {
   try {
-    if (!req.params?.id) {
-      throw new Error('Thiếu dữ liệu');
-    }
-
     const [article, otherFields] = await db.query(
-      'SELECT articles.*, categories.name as categoryName, users.name as authorName FROM articles inner join categories on categories.id=articles.categoryId inner join users on users.id=articles.userId where id = ?',
-      [req.params.id]
+      'SELECT articles.*, categories.name as categoryName, users.name as authorName FROM articles inner join categories on categories.id=articles.categoryId inner join users on users.id=articles.userId where articles.id = ?',
+      [req.params?.id]
     );
     res.status(200).json({ status: true, article });
   } catch (error) {
@@ -73,6 +69,18 @@ export const deleteArticle = async (req, res) => {
   try {
     await db.query('delete from articles where id=?', [req.params.id]);
     res.status(200).json({ status: true, message: 'Xóa thành công.' });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+export const getMyArticles = async (req, res) => {
+  try {
+    const [articles, otherFields] = await db.query(
+      'SELECT articles.*, categories.name as categoryName, users.name as authorName FROM articles inner join categories on categories.id=articles.categoryId inner join users on users.id=articles.userId where userId=?',
+      [req.signedInUserId]
+    );
+    res.status(200).json({ status: true, articles });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
   }

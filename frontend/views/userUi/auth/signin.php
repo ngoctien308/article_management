@@ -82,7 +82,11 @@
             });
             const finalRes = await res.json();
 
-            if (!finalRes?.status) {
+            if (finalRes?.role == 'admin') {
+                document.getElementById('message').textContent = 'Sai tài khoản hoặc mật khẩu';
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            } else if (!finalRes?.status) {
                 document.getElementById('message').textContent = finalRes.message || 'Đăng nhập thất bại.';
                 document.getElementById('email').value = '';
                 document.getElementById('password').value = '';

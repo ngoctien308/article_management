@@ -10,4 +10,9 @@ class ArticleController
     {
         require_once __DIR__ . '/../views/userUi/articles/detail.php';
     }
+
+    public function myArticles()
+    {
+        require_once __DIR__ . '/../views/userUi/articles/myArticles.php';
+    }
 }
