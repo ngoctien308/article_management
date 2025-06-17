@@ -16,6 +16,11 @@ class ArticleController
         require_once __DIR__ . '/../views/userUi/articles/myArticles.php';
     }
 
+    public function add()
+    {
+        require_once __DIR__ . '/../views/userUi/articles/add.php';
+    }
+
     public function edit()
     {
         require_once __DIR__ . '/../views/userUi/articles/edit.php';

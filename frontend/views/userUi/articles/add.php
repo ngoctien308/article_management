@@ -11,7 +11,7 @@
 
 <body class="bg-light">
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg px-4 fixed-top shadow" style='background:rgb(16, 58, 158);'>
+    <nav class="navbar navbar-expand-lg px-4" style='background:rgb(16, 58, 158);'>
         <a class="navbar-brand" href="?controller=article&action=index" style="color: whitesmoke">📰 Tiến Express</a>
         <div class="ms-auto dropdown">
             <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userMenu" data-bs-toggle="dropdown"
@@ -28,10 +28,10 @@
         </div>
     </nav>
 
-    <div class="mt-4 container py-5">
-        <h2 class="mb-4">📝 Sửa bài viết</h2>
+    <div class="container py-5">
+        <h2 class="mb-4">📝 Tạo bài viết</h2>
 
-        <form id="editForm">
+        <form id="addForm">
             <div class="mb-3">
                 <label class="form-label">Tiêu đề</label>
                 <input type="text" class="form-control" id="title" required>
@@ -50,7 +50,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
+            <button type="submit" class="btn btn-primary">💾 Lưu</button>
             <a href="?controller=article&action=myArticles" class="btn btn-secondary">⬅ Quay lại</a>
         </form>
     </div>
@@ -102,22 +102,6 @@
             window.location.href = '?controller=auth&action=signin';
         }
 
-        //
-
-        const articleId = new URLSearchParams(window.location.search).get('id');
-
-        const fetchArticle = async () => {
-            const res = await fetch(`http://localhost:3000/api/articles/${articleId}`, {
-                headers: { Authorization: 'Bearer ' + token }
-            });
-            const { article } = await res.json();
-
-            document.getElementById('title').value = article[0].title;
-            document.getElementById('content').value = article[0].content;
-            loadCategories(article[0].categoryId);
-        };
-        fetchArticle();
-
         const loadCategories = async (selectedId) => {
             const res = await fetch('http://localhost:3000/api/categories');
             const { categories } = await res.json();
@@ -130,27 +114,29 @@
                 select.appendChild(opt);
             });
         };
+        loadCategories(0);
 
-        document.getElementById('editForm').addEventListener('submit', async (e) => {
+        document.getElementById('addForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const updatedArticle = {
+            const newArticle = {
                 title: document.getElementById('title').value,
                 content: document.getElementById('content').value,
-                categoryId: document.getElementById('categoryId').value
+                categoryId: document.getElementById('categoryId').value,
+                userId: user?.id
             };
 
-            const res = await fetch(`http://localhost:3000/api/articles/${articleId}`, {
-                method: 'PATCH',
+            const res = await fetch(`http://localhost:3000/api/articles`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: 'Bearer ' + token
                 },
-                body: JSON.stringify(updatedArticle)
+                body: JSON.stringify(newArticle)
             });
 
             const result = await res.json();
             if (result?.status) {
-                window.location.href = '?controller=article&action=myArticles';
+                window.location.href = '?controller=article&action=index';
             }
         });
     </script>

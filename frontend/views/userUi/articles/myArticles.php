@@ -38,8 +38,8 @@
 
 <body>
     <!-- Header -->
-    <nav class="navbar navbar-expand-lg px-4" style='background:rgb(16, 58, 158);'>
-        <a class="navbar-brand" href="?controller=article&action=index" style="color: whitesmoke">📰 Article App</a>
+    <nav class="navbar navbar-expand-lg px-4 fixed-top shadow" style='background:rgb(16, 58, 158);'>
+        <a class="navbar-brand" href="?controller=article&action=index" style="color: whitesmoke">📰 Tiến Express</a>
         <div class="ms-auto dropdown">
             <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userMenu" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -55,7 +55,7 @@
         </div>
     </nav>
 
-    <div class="container py-5">
+    <div class="container py-5 mt-4">
         <h2 class="mb-4">📚 Danh sách bài báo của tôi</h2>
 
         <div id="article-list" class="row row-cols-1 row-cols-md-3 g-4">
@@ -63,6 +63,7 @@
     </div>
 
     <script>
+        let user;
         // check token
         const getToken = () => {
             const itemStr = localStorage.getItem('token');
@@ -95,7 +96,7 @@
                     }
                 });
                 const finalRes = await res.json();
-                const user = await finalRes?.user[0];
+                user = await finalRes?.user[0];
                 document.getElementById('username').textContent = `👋 Xin chào, ${user?.name.toUpperCase()}`;
             } catch (err) {
                 console.error('Lỗi khi fetch user:', err);
