@@ -9,6 +9,20 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+export const getCurrentUser = async (req, res) => {
+  try {
+    const currentUserId = req.signedInUserId;
+    const [user, otherFields] = await db.query(
+      'SELECT * FROM users where id=?',
+      [currentUserId]
+    );
+
+    res.status(200).json({ status: true, user });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
 export const createUser = async (req, res) => {
   try {
     const name = req.body?.name;
@@ -39,12 +53,10 @@ export const createUser = async (req, res) => {
       password
     ]);
 
-    res
-      .status(200)
-      .json({
-        status: true,
-        message: 'Đăng kí thành công. Bây giờ bạn có thể đăng nhập'
-      });
+    res.status(200).json({
+      status: true,
+      message: 'Đăng kí thành công. Bây giờ bạn có thể đăng nhập'
+    });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
   }
