@@ -3,6 +3,6 @@ class ArticleController
 {
     public function index()
     {
-        echo 'ArticleController index';
+        require_once __DIR__ . '/../views/userUi/articles/index.php';
     }
 }

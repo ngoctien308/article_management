@@ -7,7 +7,6 @@ if (isset($_GET['mode']) && $_GET['mode'] == 'admin') {
     $controllerName = ucfirst($_GET['controller'] ?? 'article') . 'Controller';
     $actionName = $_GET['action'] ?? 'index';
     require "./controllers/${controllerName}.php";
-    require "./utils/bootstrap.php";
 
     // // Initiate
     $controllerObject = new $controllerName;

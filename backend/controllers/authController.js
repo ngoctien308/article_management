@@ -31,10 +31,11 @@ export const signIn = async (req, res) => {
     res.status(200).json({
       message: 'Đăng nhập thành công.',
       token,
-      role: signedInUser.role
+      role: signedInUser.role,
+      status: true
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ status: false, message: error.message });
   }
 };
 

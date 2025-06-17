@@ -41,9 +41,12 @@ export const createUser = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: 'Đăng kí thành công. Bây giờ bạn có thể đăng nhập' });
+      .json({
+        status: true,
+        message: 'Đăng kí thành công. Bây giờ bạn có thể đăng nhập'
+      });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ status: false, message: error.message });
   }
 };
 
