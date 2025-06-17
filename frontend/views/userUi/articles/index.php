@@ -22,6 +22,18 @@
             font-size: 0.9rem;
             color: #6c757d;
         }
+
+        .content-preview {
+            max-height: 4.5em;
+            /* Giới hạn khoảng 3 dòng (1.5em * 3) */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            /* Số dòng muốn hiển thị */
+            -webkit-box-orient: vertical;
+            line-height: 1.5em;
+        }
     </style>
 </head>
 
@@ -87,7 +99,7 @@
                         <div class="card h-100 p-3">
                             <div class="card-body">
                                 <h5 class="card-title">${article.title}</h5>
-                                <p class="card-text">${article.content}</p>
+                                <p class="card-text content-preview">${article.content}</p>
                                 <div class="text-muted small">
                                     🗓 ${new Date(article.publishDate).toLocaleDateString('vi-VN')}
                                     <br>

@@ -6,6 +6,34 @@
     <title>Bài viết của tôi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .article-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .article-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .article-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .content-preview {
+            max-height: 4.5em;
+            /* Giới hạn khoảng 3 dòng (1.5em * 3) */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            /* Số dòng muốn hiển thị */
+            -webkit-box-orient: vertical;
+            line-height: 1.5em;
+        }
+    </style>
 </head>
 
 <body>
@@ -115,7 +143,7 @@
                         <div class="card h-100 p-3">
                             <div class="card-body">
                                 <h5 class="card-title">${article.title}</h5>
-                                <p class="card-text">${article.content}</p>
+                                <p class="card-text content-preview">${article.content}</p>
                                 <div class="text-muted small">
                                     🗓 ${new Date(article.publishDate).toLocaleDateString('vi-VN')}
                                     <br>
@@ -125,7 +153,7 @@
                                 </div>
                                 <div class="d-flex gap-2 mt-4">
                                 <!-- Nút Sửa -->
-                                <a class="btn btn-sm btn-primary">
+                                <a href='?controller=article&action=edit&id=${article.id}' class="btn btn-sm btn-primary">
                                     ✏️ Sửa
                                 </a>
 

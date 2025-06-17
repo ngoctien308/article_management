@@ -5,7 +5,8 @@ dotenv.config();
 import articleRouter from './routes/articleRouter.js';
 import userRouter from './routes/userRouter.js';
 import commentRouter from './routes/commentRouter.js';
-import authRouter from './routes/authRoutes.js';
+import authRouter from './routes/authRouter.js';
+import categoryRouter from './routes/categoryRouter.js';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/api/articles', articleRouter);
 app.use('/api/users', userRouter);
 app.use('/api/comments', commentRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/categories', categoryRouter);
 
 app.listen(3000, () => {
   console.log('Server đang chạy tại cổng 3000.');
