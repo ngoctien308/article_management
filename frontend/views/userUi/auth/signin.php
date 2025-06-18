@@ -3,45 +3,46 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .login-form {
-            max-width: 400px;
-            margin: 80px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-form h2 {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="/article_management/frontend/views/userUi/css/signin.css">
 </head>
 
 <body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="admin-icon">U</div>
+            <h1 class="login-title">Đăng nhập</h1>
+            <p class="login-subtitle">Vui lòng đăng nhập để truy cập trang chủ</p>
+        </div>
 
-    <div class="login-form">
-        <h2>Đăng nhập</h2>
-        <form onsubmit="signIn(event)">
-            <div class="mb-3">
+        <form id="loginForm" method="POST">
+            <div class="form-group">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" required>
+                <input type="email" id="email" name="email" class="form-input" placeholder="user@example.com" required
+                    autocomplete="email">
             </div>
-            <div class="mb-3">
+
+            <div class="form-group">
                 <label for="password" class="form-label">Mật khẩu</label>
-                <input type="password" class="form-control" id="password" required>
+                <div style="position: relative;">
+                    <input type="password" id="password" name="password" class="form-input" placeholder="Nhập mật khẩu"
+                        required autocomplete="current-password">
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        👁️
+                    </button>
+                </div>
             </div>
-            <div id="message" class="text-danger mb-3"></div>
-            <button class="btn btn-primary w-100 mb-2">Đăng nhập</button>
-            <a href="?controller=auth&action=signup">Chưa có tài khoản? Đăng ký tại đây.</a>
+            <div id="message"></div>
+
+            <button type="submit" class="login-button" id="loginBtn">
+                Đăng nhập
+            </button>
+
+            <div class="signin-link">
+                Chưa có tài khoản?
+                <a href="?controller=auth&action=signup" id="signinLink">Đăng kí ngay</a>
+            </div>
         </form>
     </div>
 
@@ -62,14 +63,29 @@
             return item.token;
         }
 
-
         const token = getToken();
         if (token) {
             window.location.href = '?controller=article&action=index';
         }
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.password-toggle');
 
-        const signIn = async e => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁️';
+            }
+        }
+
+        // Form submission with loading state
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            loginBtn.classList.add('loading');
+            loginBtn.disabled = true;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -81,13 +97,27 @@
                 body: JSON.stringify({ email, password })
             });
             const finalRes = await res.json();
+            loginBtn.classList.remove('loading');
+            loginBtn.disabled = false;
 
             if (finalRes?.role == 'admin') {
-                document.getElementById('message').textContent = 'Sai tài khoản hoặc mật khẩu';
+                const messageBox = document.getElementById('message');
+                messageBox.textContent = 'Sai tài khoản hoặc mật khẩu';
+                messageBox.className = 'login-message text-danger';
+                setTimeout(() => {
+                    document.getElementById('message').textContent = '';
+                    messageBox.className = '';
+                }, 3000);
                 document.getElementById('email').value = '';
                 document.getElementById('password').value = '';
             } else if (!finalRes?.status) {
-                document.getElementById('message').textContent = finalRes.message || 'Đăng nhập thất bại.';
+                const messageBox = document.getElementById('message');
+                messageBox.textContent = finalRes.message || 'Đăng nhập thất bại.';
+                messageBox.className = 'login-message text-danger';
+                setTimeout(() => {
+                    document.getElementById('message').textContent = '';
+                    messageBox.className = '';
+                }, 3000);
                 document.getElementById('email').value = '';
                 document.getElementById('password').value = '';
             } else if (finalRes?.token) {
@@ -96,5 +126,8 @@
                 localStorage.setItem('token', JSON.stringify({ token: finalRes?.token, expiry }));
                 window.location.href = '?controller=article&action=index';
             }
-        }
+        });
     </script>
+</body>
+
+</html>

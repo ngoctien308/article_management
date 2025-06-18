@@ -3,7 +3,10 @@ class AuthController
 {
     public function signin()
     {
-        require_once __DIR__ . '/../views/userUi/auth/signin.php';
+        if (isset($_GET['mode']) && $_GET['mode'] == 'admin')
+            require_once __DIR__ . '/../views/adminUi/auth/signin.php';
+        else
+            require_once __DIR__ . '/../views/userUi/auth/signin.php';
     }
 
     public function signup()
