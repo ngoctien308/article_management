@@ -34,6 +34,7 @@
                     </button>
                 </div>
             </div>
+            <div id="message"></div>
 
             <button type="submit" class="login-button" id="loginBtn">
                 Đăng nhập
@@ -49,6 +50,26 @@
     </div>
 
     <script>
+        const getToken = () => {
+            const itemStr = localStorage.getItem('token');
+            if (!itemStr) return null;
+
+            const item = JSON.parse(itemStr);
+            const now = new Date();
+
+            if (now.getTime() > item.expiry) {
+                // Token đã hết hạn
+                localStorage.removeItem('token');
+                return null;
+            }
+
+            return item.token;
+        }
+
+        const token = getToken();
+        if (token) {
+            window.location.href = '?mode=admin&controller=dashboard&action=index';
+        }
         // Toggle password visibility
         function togglePassword() {
             const passwordInput = document.getElementById('password');
@@ -64,34 +85,54 @@
         }
 
         // Form submission with loading state
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const loginBtn = document.getElementById('loginBtn');
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            // Validation
-            if (!email || !password) {
-                alert('Vui lòng điền đầy đủ thông tin!');
-                return;
-            }
-
             // Show loading state
             loginBtn.classList.add('loading');
             loginBtn.disabled = true;
 
-            // Simulate login process
-            setTimeout(() => {
-                loginBtn.classList.remove('loading');
-                loginBtn.disabled = false;
+            const res = await fetch('http://localhost:3000/api/auth/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            const finalRes = await res.json();
+            loginBtn.classList.remove('loading');
+            loginBtn.disabled = false;
 
-                // Here you would normally send the data to your server
-                alert('Đăng nhập thành công! (Demo)');
-
-                // Redirect to admin dashboard
+            if (finalRes?.token && finalRes?.status && finalRes?.role == 'admin') {
+                const now = new Date();
+                const expiry = now.getTime() + 5 * 60 * 1000;
+                localStorage.setItem('token', JSON.stringify({ token: finalRes?.token, expiry }));
                 window.location.href = '?mode=admin&controller=dashboard&action=index';
-            }, 2000);
+            } else if (finalRes?.token && finalRes?.status && finalRes?.role == 'user') {
+                const messageBox = document.getElementById('message');
+                messageBox.textContent = 'Sai tài khoản hoặc mật khẩu.';
+                messageBox.className = 'login-message text-danger';
+                setTimeout(() => {
+                    document.getElementById('message').textContent = '';
+                    messageBox.className = '';
+                }, 3000);
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            } else {
+                const messageBox = document.getElementById('message');
+                messageBox.textContent = finalRes.message || 'Đăng nhập thất bại.';
+                messageBox.className = 'login-message text-danger';
+                setTimeout(() => {
+                    document.getElementById('message').textContent = '';
+                    messageBox.className = '';
+                }, 3000);
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            }
         });
     </script>
 </body>

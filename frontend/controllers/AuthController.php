@@ -11,6 +11,8 @@ class AuthController
 
     public function signup()
     {
-        require_once __DIR__ . '/../views/userUi/auth/signup.php';
+        if (!isset($_GET['mode']) || $_GET['mode'] != 'admin') {
+            require_once __DIR__ . '/../views/userUi/auth/signup.php';
+        }
     }
 }

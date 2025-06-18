@@ -245,3 +245,21 @@ body {
     transform: rotate(360deg);
   }
 }
+
+.login-message {
+  font-size: 14px;
+  border-radius: 6px;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+  margin: 10px 0;
+}
+
+/* Khi thất bại */
+.text-danger {
+  color: #842029;
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+}

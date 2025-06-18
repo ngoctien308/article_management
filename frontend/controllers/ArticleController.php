@@ -3,26 +3,36 @@ class ArticleController
 {
     public function index()
     {
-        require_once __DIR__ . '/../views/userUi/articles/index.php';
+        if (!isset($_GET['mode']) || $_GET['mode'] != 'admin') {
+            require_once __DIR__ . '/../views/userUi/articles/index.php';
+        }
     }
 
     public function detail()
     {
-        require_once __DIR__ . '/../views/userUi/articles/detail.php';
+        if (!isset($_GET['mode']) || $_GET['mode'] != 'admin') {
+            require_once __DIR__ . '/../views/userUi/articles/detail.php';
+        }
     }
 
     public function myArticles()
     {
-        require_once __DIR__ . '/../views/userUi/articles/myArticles.php';
+        if (!isset($_GET['mode']) || $_GET['mode'] != 'admin') {
+            require_once __DIR__ . '/../views/userUi/articles/myArticles.php';
+        }
     }
 
     public function add()
     {
-        require_once __DIR__ . '/../views/userUi/articles/add.php';
+        if (!isset($_GET['mode']) || $_GET['mode'] != 'admin') {
+            require_once __DIR__ . '/../views/userUi/articles/add.php';
+        }
     }
 
     public function edit()
     {
-        require_once __DIR__ . '/../views/userUi/articles/edit.php';
+        if (!isset($_GET['mode']) || $_GET['mode'] != 'admin') {
+            require_once __DIR__ . '/../views/userUi/articles/edit.php';
+        }
     }
 }
