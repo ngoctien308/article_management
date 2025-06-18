@@ -163,6 +163,7 @@
             try {
                 const res = await fetch('http://localhost:3000/api/categories');
                 const { categories } = await res.json();
+                console.log(categories)
 
                 const select = document.getElementById('categoryId');
                 categories.forEach(c => {
@@ -178,93 +179,8 @@
         };
         loadCategories(0);
 
-        // Character counters
-        const setupCharacterCounters = () => {
-            const titleInput = document.getElementById('title');
-            const contentInput = document.getElementById('content');
-            const titleCounter = document.getElementById('titleCounter');
-            const contentCounter = document.getElementById('contentCounter');
-
-            titleInput.addEventListener('input', () => {
-                const length = titleInput.value.length;
-                const maxLength = 200;
-                titleCounter.textContent = `${length}/${maxLength} ký tự`;
-
-                if (length > maxLength * 0.9) {
-                    titleCounter.className = 'char-counter danger';
-                } else if (length > maxLength * 0.7) {
-                    titleCounter.className = 'char-counter warning';
-                } else {
-                    titleCounter.className = 'char-counter';
-                }
-            });
-
-            contentInput.addEventListener('input', () => {
-                const length = contentInput.value.length;
-                const maxLength = 5000;
-                contentCounter.textContent = `${length}/${maxLength} ký tự`;
-
-                if (length > maxLength * 0.9) {
-                    contentCounter.className = 'char-counter danger';
-                } else if (length > maxLength * 0.7) {
-                    contentCounter.className = 'char-counter warning';
-                } else {
-                    contentCounter.className = 'char-counter';
-                }
-            });
-        };
-        setupCharacterCounters();
-
-        // Form validation
-        const validateForm = () => {
-            let isValid = true;
-
-            // Clear previous errors
-            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-            document.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
-
-            // Validate title
-            const title = document.getElementById('title').value.trim();
-            if (!title) {
-                document.getElementById('title').classList.add('is-invalid');
-                document.getElementById('titleError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Vui lòng nhập tiêu đề';
-                isValid = false;
-            } else if (title.length < 10) {
-                document.getElementById('title').classList.add('is-invalid');
-                document.getElementById('titleError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Tiêu đề phải có ít nhất 10 ký tự';
-                isValid = false;
-            }
-
-            // Validate content
-            const content = document.getElementById('content').value.trim();
-            if (!content) {
-                document.getElementById('content').classList.add('is-invalid');
-                document.getElementById('contentError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Vui lòng nhập nội dung';
-                isValid = false;
-            } else if (content.length < 50) {
-                document.getElementById('content').classList.add('is-invalid');
-                document.getElementById('contentError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Nội dung phải có ít nhất 50 ký tự';
-                isValid = false;
-            }
-
-            // Validate category
-            const categoryId = document.getElementById('categoryId').value;
-            if (!categoryId) {
-                document.getElementById('categoryId').classList.add('is-invalid');
-                document.getElementById('categoryError').innerHTML = '<i class="fas fa-exclamation-circle"></i> Vui lòng chọn thể loại';
-                isValid = false;
-            }
-
-            return isValid;
-        };
-
-        // Form submission
         document.getElementById('addForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            if (!validateForm()) {
-                return;
-            }
 
             const saveBtn = document.getElementById('saveBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
@@ -315,59 +231,6 @@
             }
         });
 
-        // Auto-save draft (optional enhancement)
-        let autoSaveTimeout;
-        const autoSaveDraft = () => {
-            clearTimeout(autoSaveTimeout);
-            autoSaveTimeout = setTimeout(() => {
-                const title = document.getElementById('title').value.trim();
-                const content = document.getElementById('content').value.trim();
-                const categoryId = document.getElementById('categoryId').value;
-
-                if (title || content) {
-                    localStorage.setItem('articleDraft', JSON.stringify({
-                        title, content, categoryId, timestamp: Date.now()
-                    }));
-                }
-            }, 2000);
-        };
-
-        // Load draft on page load
-        const loadDraft = () => {
-            const draft = localStorage.getItem('articleDraft');
-            if (draft) {
-                const { title, content, categoryId, timestamp } = JSON.parse(draft);
-                const hoursSinceLastSave = (Date.now() - timestamp) / (1000 * 60 * 60);
-
-                if (hoursSinceLastSave < 24) { // Only load if less than 24 hours old
-                    if (confirm('Bạn có muốn khôi phục bản nháp đã lưu không?')) {
-                        document.getElementById('title').value = title || '';
-                        document.getElementById('content').value = content || '';
-                        document.getElementById('categoryId').value = categoryId || '';
-
-                        // Update character counters
-                        document.getElementById('title').dispatchEvent(new Event('input'));
-                        document.getElementById('content').dispatchEvent(new Event('input'));
-                    }
-                }
-            }
-        };
-
-        // Set up auto-save
-        document.getElementById('title').addEventListener('input', autoSaveDraft);
-        document.getElementById('content').addEventListener('input', autoSaveDraft);
-        document.getElementById('categoryId').addEventListener('change', autoSaveDraft);
-
-        // Load draft when page loads
-        setTimeout(loadDraft, 1000);
-
-        // Clear draft on successful submission
-        window.addEventListener('beforeunload', () => {
-            // Only clear if form is being submitted successfully
-            if (document.getElementById('successMessage').style.display === 'flex') {
-                localStorage.removeItem('articleDraft');
-            }
-        });
     </script>
 </body>
 

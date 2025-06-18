@@ -304,19 +304,6 @@
 
         document.getElementById('cancelDeleteBtn').addEventListener('click', hideDeleteModal);
 
-        // Close modal when clicking outside
-        document.getElementById('deleteModal').addEventListener('click', (e) => {
-            if (e.target.id === 'deleteModal') {
-                hideDeleteModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && document.getElementById('deleteModal').style.display === 'flex') {
-                hideDeleteModal();
-            }
-        });
     </script>
 
 </body>
