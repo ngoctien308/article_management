@@ -6,64 +6,94 @@
     <title>Bài viết của tôi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .article-card {
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .article-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-
-        .article-meta {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-
-        .content-preview {
-            max-height: 4.5em;
-            /* Giới hạn khoảng 3 dòng (1.5em * 3) */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            /* Số dòng muốn hiển thị */
-            -webkit-box-orient: vertical;
-            line-height: 1.5em;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/article_management/frontend/views/userUi/css/myArticles.css">
 </head>
 
 <body>
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg px-4 fixed-top shadow" style='background:rgb(16, 58, 158);'>
-        <a class="navbar-brand" href="?controller=article&action=index" style="color: whitesmoke">📰 Tiến Express</a>
+    <!-- Enhanced Header - Same as other pages -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <a class="navbar-brand" href="?controller=article&action=index">
+            <i class="fas fa-newspaper"></i>
+            Tiến Express
+        </a>
         <div class="ms-auto dropdown">
-            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="userMenu" data-bs-toggle="dropdown"
+            <a class="btn dropdown-toggle" href="#" role="button" id="userMenu" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                👤 <span id="username">User</span>
+                <i class="fas fa-user-circle"></i>
+                <span id="username">User</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                <li><a class="dropdown-item" href="?controller=article&action=myArticles">📄 Bài viết của tôi</a></li>
+                <li><a class="dropdown-item" href="?controller=article&action=myArticles">
+                        <i class="fas fa-file-alt me-2"></i>Bài viết của tôi
+                    </a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
-                <li><a class="dropdown-item text-danger" href="#" onclick="signOut()">🚪 Đăng xuất</a></li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="signOut()">
+                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                    </a></li>
             </ul>
         </div>
     </nav>
 
     <div class="container py-5 mt-4">
-        <h2 class="mb-4">📚 Danh sách bài báo của tôi</h2>
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-user-edit"></i>
+                Bài viết của tôi
+            </h1>
+            <p class="page-subtitle">Quản lý và chỉnh sửa các bài viết bạn đã tạo</p>
+            <a href="?controller=article&action=add" class="create-btn">
+                <i class="fas fa-plus"></i>
+                Tạo bài viết mới
+            </a>
+        </div>
 
-        <div id="article-list" class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Statistics Bar -->
+        <div class="stats-bar fade-in">
+            <div class="stat-item">
+                <div class="stat-number" id="totalArticles">0</div>
+                <div class="stat-label">Tổng bài viết</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="thisMonthArticles">0</div>
+                <div class="stat-label">Bài viết tháng này</div>
+            </div>
+        </div>
+
+        <div id="article-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="loading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="delete-modal" id="deleteModal">
+        <div class="delete-modal-content">
+            <div class="delete-modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="delete-modal-title">Xác nhận xóa bài viết</div>
+            <div class="delete-modal-text">
+                Bạn có chắc chắn muốn xóa bài viết này không? Hành động này không thể hoàn tác.
+            </div>
+            <div class="delete-modal-buttons">
+                <button class="confirm-delete-btn" id="confirmDeleteBtn">
+                    <i class="fas fa-trash me-2"></i>Xóa bài viết
+                </button>
+                <button class="cancel-delete-btn" id="cancelDeleteBtn">
+                    <i class="fas fa-times me-2"></i>Hủy bỏ
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
         let user;
+        let articleToDelete = null;
+
         // check token
         const getToken = () => {
             const itemStr = localStorage.getItem('token');
@@ -73,13 +103,13 @@
             const now = new Date();
 
             if (now.getTime() > item.expiry) {
-                // Token đã hết hạn
                 localStorage.removeItem('token');
                 return null;
             }
 
             return item.token;
         }
+
         const token = getToken();
 
         if (!token) {
@@ -97,7 +127,7 @@
                 });
                 const finalRes = await res.json();
                 user = await finalRes?.user[0];
-                document.getElementById('username').textContent = `👋 Xin chào, ${user?.name.toUpperCase()}`;
+                document.getElementById('username').textContent = `${user?.name.toUpperCase()}`;
             } catch (err) {
                 console.error('Lỗi khi fetch user:', err);
             }
@@ -109,15 +139,59 @@
             window.location.href = '?controller=auth&action=signin';
         }
 
-        const deleteArticle = async id => {
-            await fetch('http://localhost:3000/api/articles/' + id, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            window.location.reload();
+        // Delete Modal Functions
+        const showDeleteModal = (articleId, articleTitle) => {
+            articleToDelete = articleId;
+            document.querySelector('.delete-modal-text').innerHTML =
+                `Bạn có chắc chắn muốn xóa bài viết "<strong>${articleTitle}</strong>" không? Hành động này không thể hoàn tác.`;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        const hideDeleteModal = () => {
+            articleToDelete = null;
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        const deleteArticle = async (id) => {
+            try {
+                const loadingBtn = document.getElementById('confirmDeleteBtn');
+                loadingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang xóa...';
+                loadingBtn.disabled = true;
+
+                await fetch('http://localhost:3000/api/articles/' + id, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                hideDeleteModal();
+                fetchArticles(); // Reload articles
+            } catch (err) {
+                console.error('Lỗi khi xóa bài viết:', err);
+                alert('Có lỗi xảy ra khi xóa bài viết!');
+            } finally {
+                const loadingBtn = document.getElementById('confirmDeleteBtn');
+                loadingBtn.innerHTML = '<i class="fas fa-trash me-2"></i>Xóa bài viết';
+                loadingBtn.disabled = false;
+            }
+        }
+
+        // Calculate statistics
+        const calculateStats = (articles) => {
+            const total = articles.length;
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+
+            const thisMonth = articles.filter(article => {
+                const articleDate = new Date(article.publishDate);
+                return articleDate.getMonth() === currentMonth &&
+                    articleDate.getFullYear() === currentYear;
+            }).length;
+
+            document.getElementById('totalArticles').textContent = total;
+            document.getElementById('thisMonthArticles').textContent = thisMonth;
         }
 
         const fetchArticles = async () => {
@@ -132,48 +206,117 @@
                 const { articles } = await res.json();
 
                 const container = document.getElementById('article-list');
+
+                // Calculate and display statistics
+                calculateStats(articles);
+
                 if (!articles.length) {
-                    container.innerHTML = '<p class="mt-2">Không có bài viết nào.</p>';
+                    container.innerHTML = `
+                        <div class="col-12">
+                            <div class="empty-state fade-in">
+                                <div class="empty-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="empty-title">Chưa có bài viết nào</div>
+                                <div class="empty-subtitle">
+                                    Hãy tạo bài viết đầu tiên của bạn để chia sẻ với cộng đồng!
+                                </div>
+                                <a href="?controller=article&action=add" class="create-btn">
+                                    <i class="fas fa-plus"></i>
+                                    Tạo bài viết đầu tiên
+                                </a>
+                            </div>
+                        </div>
+                    `;
                 } else {
                     container.innerHTML = '';
 
-                    articles.forEach(article => {
+                    articles.forEach((article, index) => {
                         const card = document.createElement('div');
-                        card.className = 'col';
+                        card.className = 'col fade-in';
+                        card.style.animationDelay = `${index * 0.1}s`;
                         card.innerHTML = `
-                        <div class="card h-100 p-3">
-                            <div class="card-body">
-                                <h5 class="card-title">${article.title}</h5>
-                                <p class="card-text content-preview">${article.content}</p>
-                                <div class="text-muted small">
-                                    🗓 ${new Date(article.publishDate).toLocaleDateString('vi-VN')}
-                                    <br>
-                                    👤 ${article.authorName.toUpperCase()}
-                                    </br>
-                                    🏷 ${article.categoryName}
-                                </div>
-                                <div class="d-flex gap-2 mt-4">
-                                <!-- Nút Sửa -->
-                                <a href='?controller=article&action=edit&id=${article.id}' class="btn btn-sm btn-primary">
-                                    ✏️ Sửa
-                                </a>
-
-                                <!-- Nút Xóa -->
-                                <button onclick="deleteArticle(${article.id})" class="btn btn-sm btn-danger">
-                                    🗑️ Xóa
-                                </button>
+                            <div class="card article-card h-100">
+                                <div class="card-body">
+                                    <h5 class="article-title">${article.title}</h5>
+                                    <p class="content-preview">${article.content}</p>
+                                    <div class="article-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-calendar-alt meta-icon"></i>
+                                            <span>${new Date(article.publishDate).toLocaleDateString('vi-VN')}</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-user meta-icon"></i>
+                                            <span class="author-name">${article.authorName.toUpperCase()}</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-tag meta-icon"></i>
+                                            <span class="category-tag">${article.categoryName}</span>
+                                        </div>
+                                    </div>
+                                    <div class="action-buttons">
+                                        <a href='?controller=article&action=edit&id=${article.id}' class="edit-btn">
+                                            <i class="fas fa-edit"></i>
+                                            Chỉnh sửa
+                                        </a>
+                                        <button onclick="showDeleteModal(${article.id}, '${article.title.replace(/'/g, "\\'")}' )" class="delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                            Xóa bài
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         `;
                         container.appendChild(card);
                     });
                 }
             } catch (err) {
                 console.error('Lỗi khi fetch bài viết:', err);
+                const container = document.getElementById('article-list');
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="empty-title">Có lỗi xảy ra</div>
+                            <div class="empty-subtitle">
+                                Không thể tải danh sách bài viết. Vui lòng thử lại sau.
+                            </div>
+                            <button onclick="fetchArticles()" class="create-btn">
+                                <i class="fas fa-refresh"></i>
+                                Thử lại
+                            </button>
+                        </div>
+                    </div>
+                `;
             }
         }
-        fetchArticles();        
+
+        fetchArticles();
+
+        // Modal event listeners
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            if (articleToDelete) {
+                deleteArticle(articleToDelete);
+            }
+        });
+
+        document.getElementById('cancelDeleteBtn').addEventListener('click', hideDeleteModal);
+
+        // Close modal when clicking outside
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'deleteModal') {
+                hideDeleteModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('deleteModal').style.display === 'flex') {
+                hideDeleteModal();
+            }
+        });
     </script>
 
 </body>
