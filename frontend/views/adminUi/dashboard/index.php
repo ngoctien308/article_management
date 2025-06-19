@@ -14,6 +14,8 @@
             <div class="sidebar-header">
                 <h2>Admin Panel</h2>
                 <p>Hệ thống quản trị</p>
+                <button onclick="signout()" style="margin: auto; margin-top: 5px;" class="btn btn-secondary">Đăng
+                    xuất</button>
             </div>
             <nav class="nav-menu">
                 <button class="nav-item active" onclick="changePage('articles')" id="nav-articles">
@@ -596,6 +598,11 @@
         };
         // Gọi lần đầu để hiển thị trang mặc định
         changePage(page);
+
+        const signout = () => {
+            localStorage.removeItem('token');
+            window.location.reload();
+        }
     </script>
 </body>
 
