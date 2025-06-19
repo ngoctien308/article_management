@@ -163,7 +163,6 @@
             try {
                 const res = await fetch('http://localhost:3000/api/categories');
                 const { categories } = await res.json();
-                console.log(categories)
 
                 const select = document.getElementById('categoryId');
                 categories.forEach(c => {

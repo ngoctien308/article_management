@@ -231,7 +231,6 @@
                 signupBtn.classList.remove('loading');
                 signupBtn.disabled = false;
             } else {
-                console.log('dk')
                 const res = await fetch('http://localhost:3000/api/auth/signup', {
                     method: 'POST',
                     headers: {

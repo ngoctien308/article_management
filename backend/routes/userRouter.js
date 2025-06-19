@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   getAllUsers,
+  getUser,
   createUser,
   deleteUser,
   updateUser
@@ -8,8 +9,11 @@ import {
 import { protect } from '../controllers/authController.js';
 const router = express.Router();
 
-router.use(protect);
 router.route('/').get(getAllUsers).post(protect, createUser);
-router.route('/:id').delete(protect, deleteUser).patch(protect, updateUser);
+router
+  .route('/:id')
+  .get(getUser)
+  .delete(protect, deleteUser)
+  .patch(protect, updateUser);
 
 export default router;

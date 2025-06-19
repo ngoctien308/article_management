@@ -2,8 +2,21 @@ import db from '../db.js';
 
 export const getAllUsers = async (req, res) => {
   try {
-    const [users, otherFields] = await db.query('SELECT * FROM users');
+    const [users, otherFields] = await db.query(
+      'SELECT * FROM users where role != "admin"'
+    );
     res.status(200).json({ status: true, users });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+export const getUser = async (req, res) => {
+  try {
+    const [user, otherFields] = await db.query(
+      'SELECT * FROM users where role != "admin" and id=?',
+      [req.params.id]
+    );
+    res.status(200).json({ status: true, user });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
   }
@@ -70,6 +83,19 @@ export const updateUser = async (req, res) => {
 
     if (!name || !email || !password) {
       throw new Error('Thiếu dữ liệu.');
+    }
+
+    if (password.length < 6) {
+      throw new Error('Mật khẩu phải từ 6 kí tự trở lên.');
+    }
+
+    // check trung
+    const [data, others] = await db.query('select * from users where email=?', [
+      email
+    ]);
+
+    if (data[0]) {
+      throw new Error('Email đã tồn tại.');
     }
 
     await db.query('update users set name=?,email=?,password=? where id=?', [
