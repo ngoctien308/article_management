@@ -89,15 +89,6 @@ export const updateUser = async (req, res) => {
       throw new Error('Mật khẩu phải từ 6 kí tự trở lên.');
     }
 
-    // check trung
-    const [data, others] = await db.query('select * from users where email=?', [
-      email
-    ]);
-
-    if (data[0]) {
-      throw new Error('Email đã tồn tại.');
-    }
-
     await db.query('update users set name=?,email=?,password=? where id=?', [
       name,
       email,
