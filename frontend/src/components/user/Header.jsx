@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const Header = ({ user }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -17,21 +18,23 @@ const Header = ({ user }) => {
   };
 
   return (
-    <header className='w-full border-b bg-white shadow-sm fixed top-0 z-10'>
+    <header className='w-full border-b border-gray-300 bg-white shadow-sm fixed top-0 z-10'>
       <div className='container mx-auto px-4 py-3'>
         <div className='flex items-center justify-between'>
           {/* Logo/Tên website bên trái */}
-          <div className='flex items-center'>
-            <h1 className='text-2xl font-bold text-blue-600'>
-              GROUP 4 Express
-            </h1>
-          </div>
+          <Link to='/user/articles'>
+            <div className='flex items-center'>
+              <h1 className='text-2xl font-bold text-blue-600'>
+                GROUP 4 Express
+              </h1>
+            </div>
+          </Link>
 
           {/* Combobox người dùng bên phải */}
           <div className='relative'>
             <button
               onClick={toggleDropdown}
-              className='flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+              className='cursor-pointer flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             >
               {/* User Icon */}
               <svg
@@ -47,7 +50,7 @@ const Header = ({ user }) => {
                   d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
                 />
               </svg>
-              <span className='hidden sm:inline'>{user?.name}</span>
+              <span className='hidden sm:inline uppercase'>{user?.name}</span>
               {/* Chevron Down Icon */}
               <svg
                 className={`h-4 w-4 transition-transform duration-200 ${
@@ -71,7 +74,7 @@ const Header = ({ user }) => {
               <div className='absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-50'>
                 {/* User Info */}
                 <div className='px-4 py-3 border-b border-gray-100'>
-                  <div className='text-sm font-medium text-gray-900'>
+                  <div className='text-sm font-medium text-gray-900 uppercase'>
                     {user?.name}
                   </div>
                   <div className='text-xs text-gray-500'>{user?.email}</div>
@@ -79,7 +82,7 @@ const Header = ({ user }) => {
 
                 {/* Menu Items */}
                 <div className='py-1'>
-                  <button className='flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100'>
+                  <button className='cursor-pointer flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100'>
                     {/* FileText Icon */}
                     <svg
                       className='mr-3 h-4 w-4'
@@ -99,7 +102,7 @@ const Header = ({ user }) => {
                 </div>
 
                 <div className='border-t border-gray-100' onClick={signout}>
-                  <button className='flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 focus:outline-none focus:bg-red-50'>
+                  <button className='cursor-pointer flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 focus:outline-none focus:bg-red-50'>
                     {/* LogOut Icon */}
                     <svg
                       className='mr-3 h-4 w-4'

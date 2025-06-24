@@ -1,13 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import { AuthContext } from '../../auth/AuthContext';
+import { Link } from 'react-router-dom';
 
 const ArticleList = () => {
-  const { token } = useContext(AuthContext);
   const [articles, setArticles] = useState([]);
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState('');
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -16,66 +12,6 @@ const ArticleList = () => {
     };
     fetchArticles();
   }, []);
-
-  const handleChangeFile = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreview(reader.result);
-    };
-    reader.readAsDataURL(selectedFile);
-  };
-
-  const handleUpload = async (e) => {
-    e.preventDefault();
-
-    if (!file) {
-      toast.error('Vui lòng chọn một file!');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const resImg = await axios.post(
-        'http://localhost:3000/api/upload',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      const res = await axios.post(
-        'http://localhost:3000/api/articles',
-        {
-          title: 'HELlO',
-          summary: 'SUMMARY',
-          content: 'ok',
-          image: resImg.data.url,
-          userId: 1,
-          categoryId: 1
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      if (res.status) {
-        toast.success('Thêm thành công');
-        window.location.reload();
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Có lỗi khi thêm');
-    }
-  };
 
   // Hàm format ngày
   const formatDate = (dateString) => {
@@ -101,36 +37,8 @@ const ArticleList = () => {
 
   return (
     <div className='min-h-screen bg-gray-50'>
-      {/* <form onSubmit={handleUpload}>
-        <label
-          htmlFor='img'
-          className='cursor-pointer px-4 py-2 bg-gray-600 text-white rounded'
-        >
-          Chọn ảnh
-        </label>
-        <input
-          type='file'
-          id='img'
-          className='hidden'
-          accept='image/*'
-          onChange={handleChangeFile}
-        />
-        {preview && (
-          <img
-            src={preview}
-            alt='Preview'
-            className='w-32 h-32 object-cover rounded border'
-          />
-        )}
-        <button
-          type='submit'
-          className='cursor-pointer px-4 py-2 bg-blue-600 text-white rounded'
-        >
-          Thêm bài báo
-        </button>
-      </form> */}
       {/* Hero Section */}
-      <section className='bg-white border-b'>
+      <section className='bg-white border-b border-gray-400'>
         <div className='container mx-auto px-4 py-12'>
           <div className='text-center'>
             <h1 className='text-4xl md:text-5xl font-bold text-gray-900 mb-4'>
@@ -140,6 +48,11 @@ const ArticleList = () => {
               Cập nhật những thông tin nóng hổi và hữu ích từ nhiều lĩnh vực
               khác nhau
             </p>
+            <Link to='/user/add'>
+              <button className='border border-gray-300 rounded-lg px-8 py-4 cursor-pointer hover:bg-gray-300 bg-gray-200 mt-4'>
+                Thêm bài báo
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -210,22 +123,24 @@ const ArticleList = () => {
                 </div>
 
                 {/* Nút xem chi tiết */}
-                <button className='w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium'>
-                  Xem chi tiết
-                  <svg
-                    className='w-4 h-4 ml-2 inline'
-                    fill='none'
-                    stroke='currentColor'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth={2}
-                      d='M9 5l7 7-7 7'
-                    />
-                  </svg>
-                </button>
+                <Link to={`/user/articles/${article.id}`}>
+                  <button className='cursor-pointer w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200 font-medium'>
+                    Xem chi tiết
+                    <svg
+                      className='w-4 h-4 ml-2 inline'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M9 5l7 7-7 7'
+                      />
+                    </svg>
+                  </button>
+                </Link>
               </div>
             </article>
           ))}
@@ -233,7 +148,7 @@ const ArticleList = () => {
 
         {/* Load More Button */}
         <div className='text-center mt-12'>
-          <button className='bg-gray-200 text-gray-700 px-8 py-3 rounded-md hover:bg-gray-300 transition-colors duration-200 font-medium'>
+          <button className='cursor-pointer bg-gray-200 text-gray-700 px-8 py-3 rounded-md hover:bg-gray-300 transition-colors duration-200 font-medium'>
             Xem thêm bài viết
           </button>
         </div>

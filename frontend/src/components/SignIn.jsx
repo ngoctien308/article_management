@@ -42,28 +42,28 @@ const SignIn = () => {
   return (
     <div className='min-h-screen flex items-center justify-center bg-gray-100'>
       <div className='bg-white p-8 rounded-xl shadow-lg w-full max-w-md'>
-        <h2 className='text-2xl font-bold mb-6 text-center'>
+        <h2 className='text-2xl font-bold mb-6 text-center text-gray-600'>
           {isAdmin ? 'Đăng nhập cho Admin' : 'Đăng nhập'}
         </h2>
 
         <form className='space-y-4' onSubmit={handleSignIn}>
-          <label>Email</label>
+          <label className='text-gray-600'>Email</label>
           <input
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type='email'
             placeholder='Email'
-            className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+            className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
           />
-          <label>Mật khẩu</label>
+          <label className='text-gray-600'>Mật khẩu</label>
           <input
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type='password'
             placeholder='Mật khẩu'
-            className='w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
+            className='border-gray-300 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400'
           />
           <button
             type='submit'

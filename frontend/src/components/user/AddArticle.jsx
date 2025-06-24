@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AddArticle = () => {
   const navigate = useNavigate();
@@ -128,7 +128,7 @@ const AddArticle = () => {
                   required
                   id='title'
                   name='title'
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 `}
+                  className={`border-gray-300 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 `}
                   placeholder='Nhập tiêu đề bài báo...'
                 />
               </div>
@@ -147,7 +147,7 @@ const AddArticle = () => {
                   id='categoryId'
                   name='categoryId'
                   required
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                  className={`border-gray-300 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                 >
                   <option value=''>Chọn thể loại</option>
                   {categories.map((category) => (
@@ -175,7 +175,7 @@ const AddArticle = () => {
                       name='image'
                       accept='image/*'
                       onChange={handleChangeFile}
-                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                      className={`border-gray-300 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                     />
                     <p className='mt-1 text-sm text-gray-500'>
                       Chấp nhận JPG, PNG, GIF. Tối đa 5MB.
@@ -210,7 +210,7 @@ const AddArticle = () => {
                   id='summary'
                   name='summary'
                   rows={4}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical`}
+                  className={`border-gray-300 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical`}
                   placeholder='Nhập tóm tắt ngắn gọn về bài báo...'
                 />
               </div>
@@ -230,23 +230,25 @@ const AddArticle = () => {
                   id='content'
                   name='content'
                   rows={12}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical`}
+                  className={`border-gray-300 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical`}
                   placeholder='Nhập nội dung đầy đủ của bài báo...'
                 />
               </div>
             </div>
 
             {/* Buttons */}
-            <div className='flex justify-end space-x-4 mt-8 pt-6 border-t'>
-              <button
-                type='button'
-                className='px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors duration-200'
-              >
-                Hủy
-              </button>
+            <div className='flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-400'>
+              <Link to='/user/articles'>
+                <button
+                  type='button'
+                  className='cursor-pointer px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors duration-200'
+                >
+                  Hủy
+                </button>
+              </Link>
               <button
                 type='submit'
-                className={`px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200`}
+                className={`cursor-pointer px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200`}
               >
                 Tạo bài báo
               </button>

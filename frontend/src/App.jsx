@@ -5,6 +5,7 @@ import ArticleList from './components/user/ArticleList';
 import AddArticle from './components/user/AddArticle';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './components/admin/Dashboard';
+import ArticleDetail from './components/user/ArticleDetail';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
           <Route path='signup' element={<SignUp />} />
 
           <Route element={<ProtectedRoute />}>
+            <Route path='articles/:id' element={<ArticleDetail />} />
             <Route path='articles' element={<ArticleList />} />
             <Route path='add' element={<AddArticle />} />
           </Route>
