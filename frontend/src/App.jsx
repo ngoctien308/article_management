@@ -1,36 +1,28 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate
-} from 'react-router-dom';
-import AdminPage from './pages/admin/AdminLayout';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignIn from './components/SignIn';
 import SignUp from './components/user/SignUp';
-import UserLayout from './pages/user/UserLayout';
 import ArticleList from './components/user/ArticleList';
+import AddArticle from './components/user/AddArticle';
+import ProtectedRoute from './components/ProtectedRoute';
+import Dashboard from './components/admin/Dashboard';
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        {/* 👉 Khi vào "/" thì điều hướng sang "/user" */}
-        <Route path='/' element={<Navigate to='/user' />} />
-
         <Route path='/user'>
-          <Route path='' element={<Navigate to='signin' />} />
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
 
-          <Route path='' element={<UserLayout />}>
+          <Route element={<ProtectedRoute />}>
             <Route path='articles' element={<ArticleList />} />
+            <Route path='add' element={<AddArticle />} />
           </Route>
         </Route>
 
         <Route path='/admin'>
-          <Route path='' element={<Navigate to='signin' />} />
           <Route path='signin' element={<SignIn />} />
-          <Route path='home' element={<AdminPage />} />
+          <Route path='dashboard' element={<Dashboard />} />
         </Route>
       </Routes>
     </Router>

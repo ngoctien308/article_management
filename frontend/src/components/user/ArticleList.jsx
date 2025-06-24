@@ -9,10 +9,6 @@ const ArticleList = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState('');
 
-  // useEffect(() => {
-  //   console.log(articles);
-  // }, [articles]);
-
   useEffect(() => {
     const fetchArticles = async () => {
       const res = await axios.get('http://localhost:3000/api/articles');
@@ -105,7 +101,7 @@ const ArticleList = () => {
 
   return (
     <div className='min-h-screen bg-gray-50'>
-      <form onSubmit={handleUpload}>
+      {/* <form onSubmit={handleUpload}>
         <label
           htmlFor='img'
           className='cursor-pointer px-4 py-2 bg-gray-600 text-white rounded'
@@ -132,7 +128,7 @@ const ArticleList = () => {
         >
           Thêm bài báo
         </button>
-      </form>
+      </form> */}
       {/* Hero Section */}
       <section className='bg-white border-b'>
         <div className='container mx-auto px-4 py-12'>

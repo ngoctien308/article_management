@@ -5,18 +5,18 @@ import axios from 'axios';
 import { AuthContext } from '../auth/AuthContext';
 
 const SignIn = () => {
-  const { isLoggedIn } = useContext(AuthContext);
-  const navigate = useNavigate();
   const location = useLocation();
   const isAdmin = location.pathname.includes('/admin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (token) {
       navigate('/user/articles');
     }
-  }, [isLoggedIn]);
+  }, []);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -26,12 +26,15 @@ const SignIn = () => {
         password
       });
       if (res.status == 200) {
-        toast.success(res.data.message);
+        toast.success('Đăng nhập thành công.');
         localStorage.setItem('token', res.data.token);
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       }
     } catch (error) {
-      console.log(error);
+      setEmail('');
+      setPassword('');
       toast.error(error?.response.data.message);
     }
   };

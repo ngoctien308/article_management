@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Header = ({ user }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -9,11 +10,14 @@ const Header = ({ user }) => {
 
   const signout = () => {
     localStorage.removeItem('token');
-    window.location.reload();
+    toast.success('Đăng xuất thành công.');
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   return (
-    <header className='w-full border-b bg-white shadow-sm'>
+    <header className='w-full border-b bg-white shadow-sm fixed top-0 z-10'>
       <div className='container mx-auto px-4 py-3'>
         <div className='flex items-center justify-between'>
           {/* Logo/Tên website bên trái */}

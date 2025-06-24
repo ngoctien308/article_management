@@ -5,16 +5,10 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const token = localStorage.getItem('token');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (!token) {
-        setIsLoggedIn(false);
-        return;
-      }
-
       try {
         const res = await axios.get('http://localhost:3000/api/auth/info', {
           headers: {
@@ -22,16 +16,8 @@ export const AuthProvider = ({ children }) => {
             Authorization: `Bearer ${token}`
           }
         });
-
-        if (res.status === 200) {
-          setIsLoggedIn(true);
-          setUser(res.data.user[0]);
-        } else {
-          setIsLoggedIn(false);
-          localStorage.removeItem('token');
-        }
+        setUser(res.data.user[0]);
       } catch (error) {
-        setIsLoggedIn(false);
         localStorage.removeItem('token');
         console.log('Ở authContext: ', error);
       }
@@ -41,7 +27,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, token }}>
+    <AuthContext.Provider value={{ user, token }}>
       {children}
     </AuthContext.Provider>
   );
