@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom';
 import SignIn from './components/SignIn';
 import SignUp from './components/user/SignUp';
 import ArticleList from './components/user/ArticleList';
@@ -11,6 +16,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path='/' element={<Navigate to='/user/signin' replace />} />
         <Route path='/user'>
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
@@ -23,6 +29,7 @@ const App = () => {
         </Route>
 
         <Route path='/admin'>
+          <Route index element={<Navigate to='signin' replace />} />
           <Route path='signin' element={<SignIn />} />
           <Route path='dashboard' element={<Dashboard />} />
         </Route>

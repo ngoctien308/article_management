@@ -1,55 +1,39 @@
+import { MdDeleteOutline } from 'react-icons/md';
+import { CiEdit } from 'react-icons/ci';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { AuthContext } from '../../auth/AuthContext';
+import { confirmAlert } from 'react-confirm-alert';
 
 const ArticleDetail = () => {
   const [article, setArticle] = useState({});
-  const { id } = useParams();
-
-  useEffect(() => {
-    const fetchArticle = async () => {
-      const res = await axios.get('http://localhost:3000/api/articles/' + id);
-      setArticle(res.data.article[0]);
-    };
-    fetchArticle();
-  }, []);
-
-  // Dữ liệu mẫu bình luận
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      name: 'Trần Thị Mai',
-      rating: 5,
-      content:
-        'Bài viết rất hay và có tính thực tiễn cao. AI thực sự đang thay đổi cách chúng ta làm việc.',
-      date: '2024-01-16'
-    },
-    {
-      id: 2,
-      name: 'Lê Văn Hùng',
-      rating: 4,
-      content:
-        'Thông tin hữu ích, tuy nhiên tôi nghĩ cần thêm ví dụ cụ thể về ứng dụng AI trong các ngành nghề khác nhau.',
-      date: '2024-01-16'
-    },
-    {
-      id: 3,
-      name: 'Phạm Thị Lan',
-      rating: 5,
-      content:
-        'Cảm ơn tác giả đã chia sẻ. Bài viết giúp tôi hiểu rõ hơn về tác động của AI đến công việc hiện tại.',
-      date: '2024-01-17'
-    }
-  ]);
-
-  // State cho form bình luận
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({
-    name: '',
     rating: 0,
     content: ''
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { id } = useParams();
+  const { user, token } = useContext(AuthContext);
+
+  const fetchComments = async () => {
+    const res = await axios.get(
+      'http://localhost:3000/api/comments?articleId=' + id
+    );
+    setComments(res.data.comments);
+  };
+
+  const fetchArticle = async () => {
+    const res = await axios.get('http://localhost:3000/api/articles/' + id);
+    setArticle(res.data.article[0]);
+  };
+
+  useEffect(() => {
+    fetchArticle();
+    fetchComments();
+  }, []);
 
   // Hàm format ngày
   const formatDate = (dateString) => {
@@ -107,60 +91,6 @@ const ArticleDetail = () => {
     );
   };
 
-  // Xử lý thay đổi form bình luận
-  const handleCommentChange = (e) => {
-    const { name, value } = e.target;
-    setNewComment((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // Xử lý thay đổi rating
-  const handleRatingChange = (rating) => {
-    setNewComment((prev) => ({
-      ...prev,
-      rating
-    }));
-  };
-
-  // Xử lý submit bình luận
-  const handleSubmitComment = async (e) => {
-    e.preventDefault();
-
-    if (
-      !newComment.name.trim() ||
-      !newComment.content.trim() ||
-      newComment.rating === 0
-    ) {
-      alert('Vui lòng điền đầy đủ thông tin và chọn số sao đánh giá!');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Giả lập API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const comment = {
-        id: comments.length + 1,
-        name: newComment.name,
-        rating: newComment.rating,
-        content: newComment.content,
-        date: new Date().toISOString().split('T')[0]
-      };
-
-      setComments((prev) => [comment, ...prev]);
-      setNewComment({ name: '', rating: 0, content: '' });
-      alert('Bình luận đã được thêm thành công!');
-    } catch (error) {
-      alert('Có lỗi xảy ra, vui lòng thử lại!');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   // Tính rating trung bình
   const averageRating =
     comments.length > 0
@@ -169,6 +99,138 @@ const ArticleDetail = () => {
           comments.length
         ).toFixed(1)
       : 0;
+
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(
+        'http://localhost:3000/api/comments',
+        {
+          articleId: id,
+          userId: user.id,
+          content: newComment.content,
+          rating: newComment.rating
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      toast.success('Thêm bình luận thành công.');
+      setNewComment({
+        rating: 0,
+        content: ''
+      });
+      fetchComments();
+    } catch (error) {
+      toast.error('Lỗi thêm bình luận');
+    }
+  };
+
+  const handleEditComment = async (comment) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='bg-white rounded-xl p-8 shadow-lg'>
+            <h1 className='text-lg font-bold mb-4'>Sửa bình luận</h1>
+            <form>
+              <div className='flex gap-2 items-center'>
+                <label>Đánh giá</label>
+                <select
+                  required
+                  className='border border-gray-300 rounded px-2 py-1'
+                  value={newComment.rating}
+                  onChange={(e) =>
+                    setNewComment((prev) => ({
+                      ...prev,
+                      rating: Number(e.target.value)
+                    }))
+                  }
+                >
+                  <option value='1'>1 sao</option>
+                  <option value='2'>2 sao</option>
+                  <option value='3'>3 sao</option>
+                  <option value='4'>4 sao</option>
+                  <option value='5'>5 sao</option>
+                </select>
+              </div>
+              <div className='flex gap-2 items-center'>
+                <label>Nội dung bình luận</label>
+                <textarea
+                  className='border rounded-md p-2 border-gray-300'
+                  placeholder='Nội dung bình luận'
+                  value={newComment.content}
+                  onChange={(e) => {
+                    setNewComment((prev) => ({
+                      ...prev,
+                      content: e.target.value
+                    }));
+                  }}
+                ></textarea>
+              </div>
+            </form>
+            <div className='mt-6 flex justify-end space-x-4'>
+              <button
+                className='bg-gray-200 px-4 py-2 rounded'
+                onClick={onClose}
+              >
+                Hủy
+              </button>
+              <button className='bg-red-600 text-white px-4 py-2 rounded'>
+                Cập nhật
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
+  const handleDeleteComment = async (id) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='bg-white rounded-xl p-8 shadow-lg'>
+            <h1 className='text-lg font-bold mb-4'>Xác nhận</h1>
+            <p>Bạn chắc chắn muốn xóa không?</p>
+            <div className='mt-6 flex justify-end space-x-4'>
+              <button
+                className='bg-gray-200 px-4 py-2 rounded'
+                onClick={onClose}
+              >
+                Hủy
+              </button>
+              <button
+                className='bg-red-600 text-white px-4 py-2 rounded'
+                onClick={async () => {
+                  try {
+                    await axios.delete(
+                      'http://localhost:3000/api/comments/' + id,
+                      {
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${token}`
+                        }
+                      }
+                    );
+                    toast.error('Xóa thành công.');
+                    fetchComments();
+                  } catch (error) {
+                    toast.error('Lỗi khi xóa bình luận.');
+                  }
+                  onClose();
+                }}
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -306,8 +368,8 @@ const ArticleDetail = () => {
 
               {/* Add Comment Form */}
               <form
-                onSubmit={handleSubmitComment}
                 className='mb-8 p-6 bg-gray-50 rounded-lg'
+                onSubmit={handleAddComment}
               >
                 <h3 className='text-lg font-semibold text-gray-900 mb-4'>
                   Thêm bình luận
@@ -315,32 +377,27 @@ const ArticleDetail = () => {
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
                   <div>
-                    <label
-                      htmlFor='name'
-                      className='block text-sm font-medium text-gray-700 mb-2'
-                    >
-                      Tên của bạn <span className='text-red-500'>*</span>
-                    </label>
-                    <input
-                      type='text'
-                      id='name'
-                      name='name'
-                      value={newComment.name}
-                      onChange={handleCommentChange}
-                      className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                      placeholder='Nhập tên của bạn'
-                      required
-                    />
-                  </div>
-
-                  <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
                       Đánh giá <span className='text-red-500'>*</span>
                     </label>
-                    <StarRating
-                      rating={newComment.rating}
-                      onRatingChange={handleRatingChange}
-                    />
+                    <select
+                      required
+                      className='border border-gray-300 rounded px-2 py-1'
+                      value={newComment.rating}
+                      onChange={(e) => {
+                        setNewComment((prev) => ({
+                          ...prev,
+                          rating: e.target.value
+                        }));
+                      }}
+                    >
+                      <option value=''>Chọn số sao</option>
+                      <option value='1'>1 sao</option>
+                      <option value='2'>2 sao</option>
+                      <option value='3'>3 sao</option>
+                      <option value='4'>4 sao</option>
+                      <option value='5'>5 sao</option>
+                    </select>
                   </div>
                 </div>
 
@@ -352,10 +409,13 @@ const ArticleDetail = () => {
                     Nội dung bình luận <span className='text-red-500'>*</span>
                   </label>
                   <textarea
-                    id='content'
-                    name='content'
                     value={newComment.content}
-                    onChange={handleCommentChange}
+                    onChange={(e) => {
+                      setNewComment((prev) => ({
+                        ...prev,
+                        content: e.target.value
+                      }));
+                    }}
                     rows={4}
                     className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical'
                     placeholder='Chia sẻ suy nghĩ của bạn về bài viết...'
@@ -365,12 +425,9 @@ const ArticleDetail = () => {
 
                 <button
                   type='submit'
-                  disabled={isSubmitting}
-                  className={`px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200 ${
-                    isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  className={`px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200`}
                 >
-                  {isSubmitting ? 'Đang gửi...' : 'Gửi bình luận'}
+                  Gửi bình luận
                 </button>
               </form>
 
@@ -399,13 +456,42 @@ const ArticleDetail = () => {
                       <div className='flex-1'>
                         <div className='flex items-center justify-between mb-2'>
                           <div>
-                            <h4 className='font-semibold text-gray-900'>
-                              {comment.name}
-                            </h4>
+                            <div className='flex gap-2'>
+                              <h4 className='text-gray-900 uppercase font-bold'>
+                                {comment.userName}
+                              </h4>
+                              {comment.userId == user.id && (
+                                <div>
+                                  <button
+                                    onClick={() => {
+                                      setNewComment((prev) => ({
+                                        ...prev,
+                                        content: comment.content,
+                                        rating: comment.rating
+                                      }));
+                                      console.log(newComment);
+
+                                      handleEditComment(comment);
+                                    }}
+                                    className='transition-all cursor-pointer hover:bg-transparent hover:border-amber-400 hover:text-amber-400 border p-1 bg-amber-400 text-white border-transparent rounded'
+                                  >
+                                    <CiEdit />
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteComment(comment.id)
+                                    }
+                                    className='ml-2 transition-all cursor-pointer hover:bg-transparent hover:border-red-400 hover:text-red-400 border p-1 bg-red-400 text-white border-transparent rounded'
+                                  >
+                                    <MdDeleteOutline />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                             <div className='flex items-center space-x-2 mt-1'>
                               <StarRating rating={comment.rating} readonly />
                               <span className='text-sm text-gray-500'>
-                                {formatDate(comment.date)}
+                                {formatDate(comment.createdAt)}
                               </span>
                             </div>
                           </div>
