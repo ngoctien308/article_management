@@ -24,7 +24,8 @@ export const signIn = async (req, res) => {
       { userId: signedInUser.id },
       process.env.SECRET_KEY,
       {
-        expiresIn: 300 // 5m
+        // expiresIn: 300 // 5m
+        expiresIn: '10m'
       }
     );
 

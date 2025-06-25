@@ -47,8 +47,8 @@ export const createComment = async (req, res) => {
     }
 
     await db.query(
-      'insert into comments (userId, articleId, content) values (?,?,?)',
-      [req.body.userId, req.body.articleId, req.body.content]
+      'insert into comments (userId, articleId, content,rating) values (?,?,?,?)',
+      [req.body.userId, req.body.articleId, req.body.content, req.body.rating]
     );
 
     res.status(200).json({ status: true, message: 'Thêm thành công.' });
@@ -77,8 +77,9 @@ export const updateComment = async (req, res) => {
       throw new Error('Thiếu dữ liệu');
     }
 
-    await db.query('update comments set content=? where id=?', [
+    await db.query('update comments set content=?,rating=? where id=?', [
       req.body.content,
+      req.body.rating,
       req.params.id
     ]);
 
