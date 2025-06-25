@@ -5,7 +5,14 @@ import { toast } from 'react-toastify';
 import { confirmAlert } from 'react-confirm-alert';
 import { useEffect, useState } from 'react';
 
-const Comment = ({ comment, user, StarRating, token, fetchComments }) => {
+const Comment = ({
+  comment,
+  user,
+  StarRating,
+  token,
+  fetchComments,
+  article
+}) => {
   const [isEditingMode, setIsEditingMode] = useState(false);
   const [updatedComment, setUpdatedComment] = useState({});
 
@@ -121,7 +128,7 @@ const Comment = ({ comment, user, StarRating, token, fetchComments }) => {
               <div className='flex gap-2'>
                 <h4 className='text-gray-900 font-bold'>
                   {comment.userName}
-                  {comment.userId == user.id && ' (Tác giả)'}
+                  {article.userId == comment.userId && ' (Tác giả)'}
                 </h4>
 
                 <div>

@@ -174,10 +174,10 @@ const ArticleDetail = () => {
           {/* Comments Section */}
           <CommentList
             comments={comments}
-            articleId={id}
             user={user}
             token={token}
             fetchComments={fetchComments}
+            article={article}
           />
         </div>
       </main>

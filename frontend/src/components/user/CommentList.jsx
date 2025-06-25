@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import Comment from './Comment';
 
-const CommentList = ({ comments, articleId, user, token, fetchComments }) => {
+const CommentList = ({ comments, user, token, fetchComments, article }) => {
   const [newComment, setNewComment] = useState({
     rating: 0,
     content: ''
@@ -57,7 +57,7 @@ const CommentList = ({ comments, articleId, user, token, fetchComments }) => {
       await axios.post(
         'http://localhost:3000/api/comments',
         {
-          articleId,
+          articleId: article.id,
           userId: user.id,
           content: newComment.content,
           rating: newComment.rating
@@ -171,6 +171,7 @@ const CommentList = ({ comments, articleId, user, token, fetchComments }) => {
               formatDate
               token={token}
               fetchComments={fetchComments}
+              article={article}
             />
           ))}
         </div>
