@@ -14,23 +14,36 @@ const SignIn = () => {
 
   useEffect(() => {
     if (token) {
-      navigate('/user/articles');
+      if (!isAdmin) {
+        navigate('/user/articles');
+      } else {
+        navigate('/admin/dashboard');
+      }
     }
   }, []);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
+
     try {
       const res = await axios.post('http://localhost:3000/api/auth/signin', {
         email,
         password
       });
-      if (res.status == 200) {
+
+      if (
+        (isAdmin && res.data.role == 'admin') ||
+        (!isAdmin && res.data.role == 'user')
+      ) {
         toast.success('Đăng nhập thành công.');
         localStorage.setItem('token', res.data.token);
         setTimeout(() => {
           window.location.reload();
         }, 1500);
+      } else {
+        setEmail('');
+        setPassword('');
+        toast.error('Sai tài khoản hoặc mật khẩu');
       }
     } catch (error) {
       setEmail('');
@@ -45,6 +58,12 @@ const SignIn = () => {
         <h2 className='text-2xl font-bold mb-6 text-center text-gray-600'>
           {isAdmin ? 'Đăng nhập cho Admin' : 'Đăng nhập'}
         </h2>
+        {isAdmin && (
+          <p className='bg-amber-100 px-4 py-2 rounded-lg mb-6'>
+            <span className='font-bold'>Lưu ý:</span> Chỉ tài khoản của admin
+            mới có thể đăng nhập.
+          </p>
+        )}
 
         <form className='space-y-4' onSubmit={handleSignIn}>
           <label className='text-gray-600'>Email</label>

@@ -35,7 +35,9 @@ const App = () => {
         <Route path='/admin'>
           <Route index element={<Navigate to='signin' replace />} />
           <Route path='signin' element={<SignIn />} />
-          <Route path='dashboard' element={<Dashboard />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path='dashboard' element={<Dashboard />} />
+          </Route>
         </Route>
       </Routes>
     </Router>
