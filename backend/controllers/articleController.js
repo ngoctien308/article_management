@@ -34,7 +34,8 @@ export const createArticle = async (req, res) => {
       !req.body?.title ||
       !req.body?.content ||
       !req.body?.userId ||
-      !req.body?.categoryId
+      !req.body?.categoryId ||
+      !req.body?.summary
     ) {
       throw new Error('Thiếu dữ liệu');
     }
@@ -61,14 +62,16 @@ export const updateArticle = async (req, res) => {
     const title = req.body.title;
     const content = req.body.content;
     const categoryId = req.body.categoryId;
+    const summary = req.body.summary;
+    const image = req.body.image;
 
-    if (!title || !content || !categoryId) {
+    if (!title || !content || !categoryId || !summary) {
       throw new Error('Thiếu dữ liệu.');
     }
 
     await db.query(
-      'update articles set title=?,content=?,categoryId=? where id=?',
-      [title, content, categoryId, req.params.id]
+      'update articles set title=?,content=?,categoryId=?,summary=?,image=? where id=?',
+      [title, content, categoryId, summary, image, req.params.id]
     );
 
     res.status(200).json({ status: true, message: 'Sửa thành công.' });

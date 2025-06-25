@@ -42,7 +42,12 @@ export const getComment = async (req, res) => {
 
 export const createComment = async (req, res) => {
   try {
-    if (!req.body?.userId || !req.body?.articleId || !req.body?.content) {
+    if (
+      !req.body?.userId ||
+      !req.body?.articleId ||
+      !req.body?.content ||
+      !req.body?.rating
+    ) {
       throw new Error('Thiếu dữ liệu');
     }
 
@@ -73,7 +78,7 @@ export const deleteComment = async (req, res) => {
 
 export const updateComment = async (req, res) => {
   try {
-    if (!req.params?.id || !req.body?.content) {
+    if (!req.params?.id || !req.body?.content || !req.body?.rating) {
       throw new Error('Thiếu dữ liệu');
     }
 

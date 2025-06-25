@@ -11,6 +11,8 @@ import AddArticle from './components/user/AddArticle';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './components/admin/Dashboard';
 import ArticleDetail from './components/user/ArticleDetail';
+import MyArticle from './components/user/MyArticle';
+import EditArticle from './components/user/EditArticle';
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
             <Route path='articles/:id' element={<ArticleDetail />} />
             <Route path='articles' element={<ArticleList />} />
             <Route path='add' element={<AddArticle />} />
+            <Route path='my-articles' element={<MyArticle />} />
+            <Route path='edit-articles/:id' element={<EditArticle />} />
           </Route>
         </Route>
 

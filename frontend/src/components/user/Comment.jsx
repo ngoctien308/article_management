@@ -50,7 +50,7 @@ const Comment = ({ comment, user, StarRating, token, fetchComments }) => {
     });
   };
 
-  const handleDeleteComment = async (id) => {
+  const handleDeleteComment = async () => {
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
@@ -69,7 +69,7 @@ const Comment = ({ comment, user, StarRating, token, fetchComments }) => {
                 onClick={async () => {
                   try {
                     await axios.delete(
-                      'http://localhost:3000/api/comments/' + id,
+                      'http://localhost:3000/api/comments/' + comment.id,
                       {
                         headers: {
                           'Content-Type': 'application/json',
@@ -119,8 +119,9 @@ const Comment = ({ comment, user, StarRating, token, fetchComments }) => {
           <div className='flex items-center justify-between mb-2'>
             <div>
               <div className='flex gap-2'>
-                <h4 className='text-gray-900 uppercase font-bold'>
+                <h4 className='text-gray-900 font-bold'>
                   {comment.userName}
+                  {comment.userId == user.id && ' (Tác giả)'}
                 </h4>
 
                 <div>
@@ -133,7 +134,7 @@ const Comment = ({ comment, user, StarRating, token, fetchComments }) => {
                         <CiEdit />
                       </button>
                       <button
-                        onClick={() => handleDeleteComment(comment.id)}
+                        onClick={() => handleDeleteComment()}
                         className='ml-2 transition-all cursor-pointer hover:bg-transparent hover:border-red-400 hover:text-red-400 border p-1 bg-red-400 text-white border-transparent rounded'
                       >
                         <MdDeleteOutline />

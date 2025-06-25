@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../auth/AuthContext';
 import Header from './user/Header';
 import { toast } from 'react-toastify';
+import Footer from './user/Footer';
 
 export default function ProtectedRoute() {
   const { token, user } = useContext(AuthContext);
@@ -21,6 +22,7 @@ export default function ProtectedRoute() {
       <div className='mt-20'>
         <Outlet />
       </div>
+      <Footer />
     </>
   );
 }
