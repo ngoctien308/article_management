@@ -10,7 +10,7 @@ import {
 import { protect } from '../controllers/authController.js';
 const router = express.Router();
 
-router.patch('/:id/change-status', changeStatus);
+router.patch('/:id/change-status', protect, changeStatus);
 router
   .route('/:id')
   .get(getUser)

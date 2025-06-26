@@ -11,25 +11,19 @@ import {
   X,
   ArrowLeft,
   Shield,
-  Edit3
+  Edit3,
+  PlusCircle
 } from 'lucide-react';
 
-const EditUser = () => {
-  const { id } = useParams();
-  const [user, setUser] = useState({});
-  const [formData, setFormData] = useState({});
+const AddUser = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+
   const { token } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const fetchUser = async () => {
-    try {
-      const res = await axios.get(`http://localhost:3000/api/users/${id}`);
-      setUser(res.data.user[0]);
-    } catch (error) {
-      console.log(error);
-      toast.error('Không thể tải thông tin người dùng');
-    }
-  };
 
   const handleOnChange = (e) => {
     setFormData((prev) => {
@@ -37,39 +31,21 @@ const EditUser = () => {
     });
   };
 
-  const handleUserUpdate = async (e) => {
+  const handleAddUser = async (e) => {
     e.preventDefault();
-
     try {
-      await axios.patch(`http://localhost:3000/api/users/${id}`, formData, {
+      await axios.post('http://localhost:3000/api/users', formData, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         }
       });
-      toast.success('Cập nhật thành công.');
+      toast.success('Thêm thành công.');
       navigate('/admin/users');
     } catch (error) {
-      if (error.response.data.message?.includes('Duplicate')) {
-        toast.error('Trùng email.');
-      } else toast.error(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
-    setFormData((prev) => {
-      return {
-        ...prev,
-        email: user.email,
-        name: user.name,
-        password: user.password
-      };
-    });
-  }, [user]);
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden'>
@@ -99,15 +75,12 @@ const EditUser = () => {
 
             <div className='flex items-center gap-4 mb-2'>
               <div className='p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg'>
-                <Edit3 className='w-6 h-6 text-white' />
+                <PlusCircle className='w-6 h-6 text-white' />
               </div>
               <div>
                 <h1 className='text-3xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent'>
-                  Cập nhật tài khoản người dùng
+                  Tạo tài khoản người dùng
                 </h1>
-                <p className='text-slate-600 mt-1'>
-                  Chỉnh sửa thông tin người dùng #{id}
-                </p>
               </div>
             </div>
           </div>
@@ -125,7 +98,7 @@ const EditUser = () => {
                     Thông tin người dùng
                   </h2>
                   <p className='text-sm text-slate-600'>
-                    Cập nhật thông tin cá nhân và bảo mật
+                    Tạo thông tin cá nhân và bảo mật
                   </p>
                 </div>
               </div>
@@ -133,7 +106,7 @@ const EditUser = () => {
 
             {/* Form Content */}
             <div className='p-8'>
-              <form onSubmit={handleUserUpdate} className='space-y-6'>
+              <form onSubmit={handleAddUser} className='space-y-6'>
                 {/* Name Field */}
                 <div className='group'>
                   <label className='flex items-center gap-2 text-sm font-medium text-slate-700 mb-3'>
@@ -142,7 +115,7 @@ const EditUser = () => {
                   </label>
                   <div className='relative'>
                     <input
-                      value={formData.name || ''}
+                      value={formData.name}
                       name='name'
                       onChange={handleOnChange}
                       required
@@ -161,7 +134,7 @@ const EditUser = () => {
                   </label>
                   <div className='relative'>
                     <input
-                      value={formData.email || ''}
+                      value={formData.email}
                       name='email'
                       type='email'
                       onChange={handleOnChange}
@@ -199,7 +172,7 @@ const EditUser = () => {
                     className='flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
                   >
                     <Save className='w-4 h-4' />
-                    <span>Cập nhật</span>
+                    <span>Tạo</span>
                   </button>
 
                   <Link
@@ -213,29 +186,10 @@ const EditUser = () => {
               </form>
             </div>
           </div>
-
-          {/* Info Card */}
-          <div className='mt-6 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 backdrop-blur-sm rounded-xl border border-blue-200/30 p-4'>
-            <div className='flex items-start gap-3'>
-              <div className='p-2 bg-blue-100/50 rounded-lg'>
-                <Shield className='w-4 h-4 text-blue-600' />
-              </div>
-              <div className='flex-1'>
-                <h3 className='text-sm font-medium text-blue-900 mb-1'>
-                  Lưu ý bảo mật
-                </h3>
-                <p className='text-xs text-blue-700/80 leading-relaxed'>
-                  Việc thay đổi thông tin người dùng sẽ ảnh hưởng đến khả năng
-                  đăng nhập của họ. Hãy đảm bảo thông báo cho người dùng về
-                  những thay đổi này.
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default EditUser;
+export default AddUser;

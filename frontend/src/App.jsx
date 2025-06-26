@@ -16,6 +16,7 @@ import EditArticle from './components/user/EditArticle';
 import Users from './components/admin/Users';
 import Articles from './components/admin/Articles';
 import EditUser from './components/admin/EditUser';
+import AddUser from './components/admin/AddUser';
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='users' element={<Users />} />
+            <Route path='users/add' element={<AddUser />} />
             <Route path='users/edit/:id' element={<EditUser />} />
             <Route path='articles' element={<Articles />} />
           </Route>

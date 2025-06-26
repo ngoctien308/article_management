@@ -21,7 +21,14 @@ const Users = () => {
   const handleChangeStatus = async (userId) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/users/${userId}/change-status`
+        `http://localhost:3000/api/users/${userId}/change-status`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       toast.success('Cập nhật trạng thái thành công.');
       fetchUsers();
@@ -165,8 +172,12 @@ const Users = () => {
                 Danh sách người dùng ({users.length})
               </h2>
               <div className='flex items-center space-x-2 text-sm text-gray-500'>
-                <div className='w-2 h-2 bg-green-400 rounded-full animate-pulse'></div>
-                <span>Cập nhật realtime</span>
+                <Link
+                  to='/admin/users/add'
+                  className='cursor-pointer inline-flex items-center px-3 py-2 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md'
+                >
+                  Thêm người dùng
+                </Link>
               </div>
             </div>
           </div>
