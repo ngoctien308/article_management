@@ -13,12 +13,15 @@ import Dashboard from './components/admin/Dashboard';
 import ArticleDetail from './components/user/ArticleDetail';
 import MyArticle from './components/user/MyArticle';
 import EditArticle from './components/user/EditArticle';
+import Users from './components/admin/Users';
+import Articles from './components/admin/Articles';
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route path='/' element={<Navigate to='/user/signin' replace />} />
+        {/* User */}
         <Route path='/user'>
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
@@ -32,11 +35,14 @@ const App = () => {
           </Route>
         </Route>
 
+        {/* Admin */}
         <Route path='/admin'>
           <Route index element={<Navigate to='signin' replace />} />
           <Route path='signin' element={<SignIn />} />
           <Route element={<ProtectedRoute />}>
             <Route path='dashboard' element={<Dashboard />} />
+            <Route path='users' element={<Users />} />
+            <Route path='articles' element={<Articles />} />
           </Route>
         </Route>
       </Routes>

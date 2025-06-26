@@ -111,3 +111,15 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const changeStatus = async (req, res) => {
+  try {
+    await db.query('update users set active = NOT active where id = ?', [
+      req.params.id
+    ]);
+    res.status(200).json({ message: 'Thay đổi trạng thái thành công.' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};

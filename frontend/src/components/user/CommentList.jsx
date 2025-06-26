@@ -168,7 +168,6 @@ const CommentList = ({ comments, user, token, fetchComments, article }) => {
               comment={comment}
               user={user}
               StarRating={StarRating}
-              formatDate
               token={token}
               fetchComments={fetchComments}
               article={article}

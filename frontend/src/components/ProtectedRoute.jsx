@@ -4,6 +4,7 @@ import { AuthContext } from '../auth/AuthContext';
 import Header from './user/Header';
 import { toast } from 'react-toastify';
 import Footer from './user/Footer';
+import AdminSidebar from './admin/AdminSidebar';
 
 export default function ProtectedRoute() {
   const location = useLocation();
@@ -21,9 +22,11 @@ export default function ProtectedRoute() {
   return (
     <>
       {isAdmin && (
-        <div>
-          <p>hello</p>
-          <Outlet />
+        <div className='flex'>
+          <AdminSidebar />
+          <main className='ml-64 flex-1 p-6 bg-gray-50 min-h-screen'>
+            <Outlet />
+          </main>
         </div>
       )}
 

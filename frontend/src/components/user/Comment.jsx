@@ -47,15 +47,6 @@ const Comment = ({
       setIsEditingMode(false);
     }
   };
-  // Hàm format ngày
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
   const handleDeleteComment = async () => {
     confirmAlert({
@@ -171,7 +162,7 @@ const Comment = ({
                 <div className='flex items-center space-x-2 mt-1'>
                   <StarRating rating={comment.rating} readonly />
                   <span className='text-sm text-gray-500'>
-                    {formatDate(comment.createdAt)}
+                    {new Date(comment.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               )}

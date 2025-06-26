@@ -9,16 +9,6 @@ const Article = ({ article, fetchMyArticles, token }) => {
   const location = useLocation();
   const isMyArticlePage = location.pathname === '/user/my-articles';
 
-  // Hàm format ngày
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
   // Hàm lấy màu cho thể loại
   const getCategoryColor = (category) => {
     const colors = {
@@ -135,7 +125,7 @@ const Article = ({ article, fetchMyArticles, token }) => {
 
         {/* Ngày đăng */}
         <div className='text-xs text-gray-400 mb-4'>
-          {formatDate(article.publishDate)}
+          {new Date(article.publishDate).toLocaleDateString()}
         </div>
 
         {/* Nút xem chi tiết */}

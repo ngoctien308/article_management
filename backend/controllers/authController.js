@@ -15,8 +15,13 @@ export const signIn = async (req, res) => {
       'select * from users where email=? and password=?',
       [email, password]
     );
+
     if (data.length === 0) {
       throw new Error('Sai tài khoản hoặc mật khẩu.');
+    }
+
+    if (data[0].active == 0) {
+      throw new Error('Tài khoản này đã bị ngừng hoạt động bởi Admin');
     }
 
     const signedInUser = data[0];

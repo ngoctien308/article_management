@@ -29,16 +29,6 @@ const ArticleDetail = () => {
     fetchComments();
   }, []);
 
-  // Hàm format ngày
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
   // Hàm lấy màu cho thể loại
   const getCategoryColor = (category) => {
     const colors = {
@@ -121,7 +111,9 @@ const ArticleDetail = () => {
                     <div className='font-medium text-gray-900'>
                       {article?.authorName}
                     </div>
-                    <div>{formatDate(article?.publishDate)}</div>
+                    <div>
+                      {new Date(article?.publishDate).toLocaleDateString()}
+                    </div>
                   </div>
                 </div>
               </div>
