@@ -21,7 +21,7 @@ export const signIn = async (req, res) => {
     }
 
     if (data[0].active == 0) {
-      throw new Error('Tài khoản này đã bị ngừng hoạt động bởi Admin');
+      throw new Error('Tài khoản này chưa được kích hoạt hoạt động bởi Admin');
     }
 
     const signedInUser = data[0];

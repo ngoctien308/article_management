@@ -3,7 +3,7 @@ import db from '../db.js';
 export const getAllArticles = async (req, res) => {
   try {
     const [articles, otherFields] = await db.query(
-      'SELECT articles.*, categories.name as categoryName, users.name as authorName FROM articles inner join categories on categories.id=articles.categoryId inner join users on users.id=articles.userId'
+      'SELECT articles.*, categories.name as categoryName, users.name as authorName, users.active as userActive FROM articles inner join categories on categories.id=articles.categoryId inner join users on users.id=articles.userId'
     );
     res.status(200).json({ status: true, articles });
   } catch (error) {
@@ -14,7 +14,7 @@ export const getAllArticles = async (req, res) => {
 export const getArticle = async (req, res) => {
   try {
     const [article, otherFields] = await db.query(
-      'SELECT articles.*, categories.name as categoryName, users.name as authorName FROM articles inner join categories on categories.id=articles.categoryId inner join users on users.id=articles.userId where articles.id = ?',
+      'SELECT articles.*, categories.name as categoryName, users.name as authorName, users.active as userActive FROM articles inner join categories on categories.id=articles.categoryId inner join users on users.id=articles.userId where articles.id = ?',
       [req.params?.id]
     );
 

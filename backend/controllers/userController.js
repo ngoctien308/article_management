@@ -68,7 +68,8 @@ export const createUser = async (req, res) => {
 
     res.status(200).json({
       status: true,
-      message: 'Đăng kí thành công. Bây giờ bạn có thể đăng nhập'
+      message:
+        'Đăng kí thành công. Bạn có thể đăng nhập khi admin đã kích hoạt tài khoản.'
     });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
@@ -105,9 +106,9 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     await db.query('delete from users where id=?', [req.params?.id]);
-
     res.status(200).json({ message: 'Xóa thành công.' });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
