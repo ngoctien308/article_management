@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Users = () => {
@@ -87,9 +88,12 @@ const Users = () => {
                   >
                     {user.active ? 'Chặn' : 'Kích hoạt'}
                   </button>
-                  <button className='bg-blue-500 hover:bg-blue-300 border-transparent rounded-lg px-2 py-1 text-sm text-white cursor-pointer transition-all'>
+                  <Link
+                    to={`/admin/users/edit/${user.id}`}
+                    className='bg-blue-500 hover:bg-blue-300 border-transparent rounded-lg px-2 py-1 text-sm text-white cursor-pointer transition-all'
+                  >
                     Chỉnh sửa
-                  </button>
+                  </Link>
                 </td>
               </tr>
             ))
