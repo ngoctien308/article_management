@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { AuthContext } from '../../auth/AuthContext';
+import { AuthContext } from '../auth/AuthContext';
 
 const EditArticle = () => {
+  const location = useLocation();
+  const isAdminMode = location.pathname.includes('admin');
   const { id } = useParams();
   const { token } = useContext(AuthContext);
   const [article, setArticle] = useState({});
@@ -100,7 +102,11 @@ const EditArticle = () => {
         }
       );
       toast.success('Chỉnh sửa bài báo thành công.');
-      navigate('/user/my-articles');
+      if (isAdminMode) {
+        navigate('/admin/articles');
+      } else {
+        navigate('/user/articles');
+      }
     } catch (error) {
       console.log(error);
       toast.error('Lỗi khi chỉnh sửa bài báo.');
@@ -455,7 +461,7 @@ const EditArticle = () => {
 
               {/* Action Buttons */}
               <div className='flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 mt-12 pt-8 border-t border-gray-200'>
-                <Link to='/user/my-articles'>
+                <Link to={isAdminMode ? '/admin/articles' : '/user/articles'}>
                   <button
                     type='button'
                     className='w-full sm:w-auto px-8 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-200 font-medium'

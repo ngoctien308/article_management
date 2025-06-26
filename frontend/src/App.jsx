@@ -7,12 +7,12 @@ import {
 import SignIn from './components/SignIn';
 import SignUp from './components/user/SignUp';
 import ArticleList from './components/user/ArticleList';
-import AddArticle from './components/user/AddArticle';
+import AddArticle from './components/AddArticle';
 import ProtectedRoute from './components/ProtectedRoute';
 import Dashboard from './components/admin/Dashboard';
 import ArticleDetail from './components/user/ArticleDetail';
 import MyArticle from './components/user/MyArticle';
-import EditArticle from './components/user/EditArticle';
+import EditArticle from './components/EditArticle';
 import Users from './components/admin/Users';
 import Articles from './components/admin/Articles';
 import EditUser from './components/admin/EditUser';
@@ -47,6 +47,8 @@ const App = () => {
             <Route path='users/add' element={<AddUser />} />
             <Route path='users/edit/:id' element={<EditUser />} />
             <Route path='articles' element={<Articles />} />
+            <Route path='articles/add' element={<AddArticle />} />
+            <Route path='articles/edit/:id' element={<EditArticle />} />
           </Route>
         </Route>
       </Routes>

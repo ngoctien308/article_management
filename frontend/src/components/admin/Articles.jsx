@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { AuthContext } from '../../auth/AuthContext';
 import {
   FileText,
   Tag,
@@ -19,6 +22,7 @@ import {
 
 const Articles = () => {
   const [articles, setArticles] = useState([]);
+  const { token } = useContext(AuthContext);
 
   const fetchArticles = async () => {
     try {
@@ -33,6 +37,22 @@ const Articles = () => {
   const totalArticles = articles.length;
   const avgViews =
     totalArticles > 0 ? Math.round(totalViews / totalArticles) : 0;
+
+  const handleDeleteArticle = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/articles/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      toast.success('Xóa bài báo thành công.');
+      fetchArticles();
+    } catch (error) {
+      console.log(error);
+      toast.error('Lỗi khi xóa bài báo.');
+    }
+  };
 
   useEffect(() => {
     fetchArticles();
@@ -130,10 +150,13 @@ const Articles = () => {
             {/* Nút thêm */}
             <div className='p-6 border-b border-gray-200/50 bg-gradient-to-r from-white/50 to-gray-50/50'>
               <div className='flex flex-col lg:flex-row gap-4 justify-between'>
-                <button className='flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105'>
+                <Link
+                  to='/admin/articles/add'
+                  className='flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105'
+                >
                   <Plus className='w-4 h-4' />
                   Thêm bài viết
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -260,10 +283,16 @@ const Articles = () => {
                         </td>
                         <td className='px-6 py-4'>
                           <div className='flex items-center gap-2'>
-                            <button className='p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 group/edit'>
+                            <Link
+                              to={`/admin/articles/edit/${article.id}`}
+                              className='p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 group/edit'
+                            >
                               <Edit3 className='w-4 h-4 group-hover/edit:scale-110 transition-transform duration-200' />
-                            </button>
-                            <button className='p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 group/delete'>
+                            </Link>
+                            <button
+                              onClick={() => handleDeleteArticle(article.id)}
+                              className='p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200 group/delete'
+                            >
                               <Trash2 className='w-4 h-4 group-hover/delete:scale-110 transition-transform duration-200' />
                             </button>
                           </div>

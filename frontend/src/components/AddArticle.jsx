@@ -1,10 +1,13 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { AuthContext } from '../../auth/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../auth/AuthContext';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const AddArticle = () => {
+  const location = useLocation();
+  const isAdminMode = location.pathname.includes('admin');
+
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [preview, setPreview] = useState('');
@@ -75,7 +78,11 @@ const AddArticle = () => {
       );
       if (res.status) {
         toast.success('Thêm thành công');
-        navigate('/user/articles');
+        if (isAdminMode) {
+          navigate('/admin/articles');
+        } else {
+          navigate('/user/articles');
+        }
       }
     } catch (err) {
       console.error(err);
@@ -386,7 +393,7 @@ const AddArticle = () => {
 
               {/* Action Buttons */}
               <div className='flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4 mt-12 pt-8 border-t border-gray-200'>
-                <Link to='/user/articles'>
+                <Link to={isAdminMode ? '/admin/articles' : '/user/articles'}>
                   <button
                     type='button'
                     className='w-full sm:w-auto px-8 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-gray-500/20 transition-all duration-200 font-medium'
@@ -457,25 +464,27 @@ const AddArticle = () => {
           </div>
 
           {/* Help Section */}
-          <div className='mt-12 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-8 border border-emerald-200'>
-            <div className='text-center'>
-              <h3 className='text-lg font-semibold text-emerald-900 mb-4'>
-                Cần hỗ trợ?
-              </h3>
-              <p className='text-emerald-700 mb-6'>
-                Nếu bạn gặp khó khăn trong việc tạo bài báo, hãy tham khảo hướng
-                dẫn hoặc liên hệ với chúng tôi.
-              </p>
-              <div className='flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4'>
-                <button className='px-6 py-2 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors duration-200 font-medium'>
-                  Xem hướng dẫn
-                </button>
-                <button className='px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200 font-medium'>
-                  Liên hệ hỗ trợ
-                </button>
+          {!isAdminMode && (
+            <div className='mt-12 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-8 border border-emerald-200'>
+              <div className='text-center'>
+                <h3 className='text-lg font-semibold text-emerald-900 mb-4'>
+                  Cần hỗ trợ?
+                </h3>
+                <p className='text-emerald-700 mb-6'>
+                  Nếu bạn gặp khó khăn trong việc tạo bài báo, hãy tham khảo
+                  hướng dẫn hoặc liên hệ với chúng tôi.
+                </p>
+                <div className='flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4'>
+                  <button className='px-6 py-2 bg-white text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors duration-200 font-medium'>
+                    Xem hướng dẫn
+                  </button>
+                  <button className='px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200 font-medium'>
+                    Liên hệ hỗ trợ
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>
