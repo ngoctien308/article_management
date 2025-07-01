@@ -117,7 +117,7 @@ const Dashboard = () => {
                 <h2 className='text-lg font-semibold text-gray-900 mb-2'>
                   Người dùng
                 </h2>
-                <div className='flex items-center space-x-2'>
+                {/* <div className='flex items-center space-x-2'>
                   <div className='flex items-center space-x-1 text-green-600'>
                     <svg
                       className='w-4 h-4'
@@ -137,7 +137,7 @@ const Dashboard = () => {
                   <span className='text-sm text-gray-500'>
                     so với tháng trước
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -175,7 +175,7 @@ const Dashboard = () => {
                 <h2 className='text-lg font-semibold text-gray-900 mb-2'>
                   Bài viết
                 </h2>
-                <div className='flex items-center space-x-2'>
+                {/* <div className='flex items-center space-x-2'>
                   <div className='flex items-center space-x-1 text-green-600'>
                     <svg
                       className='w-4 h-4'
@@ -195,7 +195,7 @@ const Dashboard = () => {
                   <span className='text-sm text-gray-500'>
                     so với tháng trước
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -233,7 +233,7 @@ const Dashboard = () => {
                 <h2 className='text-lg font-semibold text-gray-900 mb-2'>
                   Bình luận
                 </h2>
-                <div className='flex items-center space-x-2'>
+                {/* <div className='flex items-center space-x-2'>
                   <div className='flex items-center space-x-1 text-green-600'>
                     <svg
                       className='w-4 h-4'
@@ -253,7 +253,7 @@ const Dashboard = () => {
                   <span className='text-sm text-gray-500'>
                     so với tháng trước
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
