@@ -33,7 +33,7 @@ export default function ProtectedRoute() {
       {!isAdmin && (
         <>
           {user && <Header user={user} />}
-          <div className='mt-20'>
+          <div className='mt-30'>
             <Outlet />
           </div>
           <Footer />
