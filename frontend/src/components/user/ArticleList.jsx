@@ -19,12 +19,12 @@ const ArticleList = () => {
     fetchCategories();
   }, [])
 
-  // Lấy 3 bài viết nổi bật
+  // Lấy 5 bài viết nổi bật
   const featuredArticles = articles.slice(0, 5)
   // mainFeatured là là bài viết nổi bật chính
   const mainFeatured = featuredArticles[0]
   // sideFeatured là các bài viết nổi bật phụ
-  // Chỉ lấy 2 bài viết tiếp theo để hiển thị ở bên cạnh
+  // Chỉ lấy 4 bài viết tiếp theo để hiển thị ở bên cạnh
   const sideFeatured = featuredArticles.slice(1, 5);
 
   return (
@@ -172,7 +172,7 @@ const ArticleList = () => {
                 </section>
               )}
 
-              {/* News Section */}
+              {/* All Articles Section */}
               {articles.length > 0 && (
                 <section className="mb-8">
                   <div className="flex items-center mb-4">

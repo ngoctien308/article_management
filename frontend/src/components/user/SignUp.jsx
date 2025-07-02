@@ -13,7 +13,6 @@ const SignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    console.log(formData);
     const { email, name, password, confirmPasword } = formData;
 
     if (password !== confirmPasword) {
@@ -40,10 +39,6 @@ const SignUp = () => {
       return { ...prev, [e.target.name]: e.target.value };
     });
   };
-
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4 relative overflow-hidden'>

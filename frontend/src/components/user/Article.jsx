@@ -4,7 +4,6 @@ import { confirmAlert } from 'react-confirm-alert';
 import axios from 'axios';
 
 const Article = ({ article, fetchMyArticles, token }) => {
-  console.log(article);
   const location = useLocation();
   const isMyArticlePage = location.pathname === '/user/my-articles';
 
