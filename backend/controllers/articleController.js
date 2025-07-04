@@ -82,7 +82,6 @@ export const updateArticle = async (req, res) => {
 
 export const deleteArticle = async (req, res) => {
   try {
-    await db.query('delete from comments where articleId=?', [req.params.id]);
     await db.query('delete from articles where id=?', [req.params.id]);
     res.status(200).json({ status: true, message: 'Xóa thành công.' });
   } catch (error) {

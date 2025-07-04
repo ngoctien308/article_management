@@ -3,6 +3,9 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AuthContext } from '../../auth/AuthContext';
+import { MdDeleteOutline } from "react-icons/md";
+import { confirmAlert } from 'react-confirm-alert';
+
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -36,6 +39,76 @@ const Users = () => {
       toast.error('Có lỗi xảy ra.');
     }
   };
+
+  const handleDeleteUser = async (userId) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50'>
+            <div className='bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 max-w-md w-full transform transition-all'>
+              {/* Icon */}
+              <div className='flex justify-center mb-6'>
+                <div className='p-3 rounded-full bg-red-100'>
+                  <svg
+                    className='w-8 h-8 text-red-600'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <h1 className='text-2xl font-bold mb-4 text-center text-gray-900'>
+                Xác nhận xóa
+              </h1>
+              <p className='text-gray-600 text-center mb-8'>
+                Bạn chắc chắn muốn xóa người dùng này? Hành động này không thể
+                hoàn tác.
+              </p>
+
+              <div className='flex space-x-4'>
+                <button
+                  className='flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105'
+                  onClick={onClose}
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  className='flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl'
+                  onClick={async () => {
+                    try {
+                      await axios.delete(`http://localhost:3000/api/users/${userId}`, {
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${token}`
+                        }
+                      });
+                      toast.success('Xóa người dùng thành công.');
+                      fetchUsers();
+                    } catch (error) {
+                      console.log(error);
+                      toast.error('Có lỗi xảy ra khi xóa người dùng.');
+                    }
+
+                    onClose();
+                  }}
+                >
+                  Xác nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+    });
+  }
 
   useEffect(() => {
     fetchUsers();
@@ -310,9 +383,8 @@ const Users = () => {
                               </svg>
                             </div>
                             <div
-                              className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
-                                user.active ? 'bg-green-400' : 'bg-red-400'
-                              }`}
+                              className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${user.active ? 'bg-green-400' : 'bg-red-400'
+                                }`}
                             ></div>
                           </div>
                           <div>
@@ -378,11 +450,10 @@ const Users = () => {
                         <div className='flex items-center space-x-2'>
                           <button
                             onClick={() => handleChangeStatus(user.id)}
-                            className={`cursor-pointer inline-flex items-center px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md ${
-                              user.active
-                                ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white'
-                                : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
-                            }`}
+                            className={`cursor-pointer inline-flex items-center px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md ${user.active
+                              ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white'
+                              : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
+                              }`}
                           >
                             <svg
                               className='w-3 h-3 mr-1'
@@ -427,6 +498,13 @@ const Users = () => {
                             </svg>
                             Chỉnh sửa
                           </Link>
+                          <button
+                            onClick={() => handleDeleteUser(user.id)}
+                            className='cursor-pointer inline-flex gap-1 items-center px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md'
+                          >
+                            <MdDeleteOutline />
+                            Xóa
+                          </button>
                         </div>
                       </td>
                     </tr>

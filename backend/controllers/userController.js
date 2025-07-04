@@ -69,7 +69,7 @@ export const createUser = async (req, res) => {
     res.status(200).json({
       status: true,
       message:
-        'Đăng kí thành công. Vui lòng kiểm tra email để kích hoạt tài khoản, sau đó bạn có thể đăng nhập.'
+        'Đăng kí thành công. Bạn có thể đăng nhập.'
     });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
