@@ -143,7 +143,7 @@ const ArticleList = () => {
                             <div className="flex space-x-3">
                               <div className="flex-shrink-0">
                                 <img
-                                  src={article.image || "/placeholder.svg?height=100&width=150"}
+                                  src={article.image}
                                   alt={article.title}
                                   className="w-24 h-16 object-cover rounded group-hover:opacity-80 transition-opacity"
                                 />
