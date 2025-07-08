@@ -17,6 +17,7 @@ import Users from './components/admin/Users';
 import Articles from './components/admin/Articles';
 import EditUser from './components/admin/EditUser';
 import AddUser from './components/admin/AddUser';
+import NotFound from './components/NotFound';
 
 const App = () => {
   return (
@@ -51,6 +52,9 @@ const App = () => {
             <Route path='articles/edit/:id' element={<EditArticle />} />
           </Route>
         </Route>
+
+        {/* Fallback route */}
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </Router>
   );
