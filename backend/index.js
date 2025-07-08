@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads')); // Cho phép truy cập ảnh tĩnh
 
-// ⚙️ Cấu hình Multer
+// Cấu hình Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/'); // Lưu vào thư mục uploads
