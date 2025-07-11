@@ -23,15 +23,15 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Navigate to='/user/signin' replace />} />
+        <Route path='/' element={<Navigate to='/user/articles' replace />} />
         {/* User */}
         <Route path='/user'>
           <Route path='signin' element={<SignIn />} />
           <Route path='signup' element={<SignUp />} />
 
+          <Route path='articles' element={<ArticleList />} />
           <Route element={<ProtectedRoute />}>
             <Route path='articles/:id' element={<ArticleDetail />} />
-            <Route path='articles' element={<ArticleList />} />
             <Route path='add' element={<AddArticle />} />
             <Route path='my-articles' element={<MyArticle />} />
             <Route path='edit-articles/:id' element={<EditArticle />} />

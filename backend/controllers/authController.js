@@ -6,7 +6,6 @@ export const signIn = async (req, res) => {
     const email = req.body?.email;
     const password = req.body?.password;
 
-    // check trong
     if (!email || !password) {
       throw new Error('Thiếu dữ liệu');
     }

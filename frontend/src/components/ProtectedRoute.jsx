@@ -14,7 +14,7 @@ export default function ProtectedRoute() {
 
   useEffect(() => {
     if (!token) {
-      toast.warning('Phiên đăng nhập hết hạn.');
+      toast.warning('Vui lòng đăng nhập.');
       navigate(`/${isAdmin ? 'admin' : 'user'}/signin`);
     }
   }, [token]);
