@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   }
 });
+
 const upload = multer({ storage });
 app.post('/api/upload', upload.single('image'), (req, res) => {
   if (!req.file) {
