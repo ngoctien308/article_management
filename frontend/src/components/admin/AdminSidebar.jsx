@@ -7,10 +7,9 @@ const AdminSidebar = () => {
   };
 
   const navLinkClass = ({ isActive }) =>
-    `group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 ${
-      isActive
-        ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
-        : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700'
+    `group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 transform hover:scale-105 ${isActive
+      ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25'
+      : 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-700'
     }`;
 
   return (
@@ -152,6 +151,23 @@ const AdminSidebar = () => {
             <div>
               <div className='font-medium'>Bài viết</div>
               <div className='text-xs opacity-75'>Quản lý nội dung</div>
+            </div>
+          </NavLink>
+
+          <NavLink to='/admin/categories' className={navLinkClass}>
+            <div className='p-2 rounded-lg bg-white/50 group-hover:bg-white/80 transition-all duration-200'>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 11H5m14-7H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM9 7v10m6-10v10"
+                />
+              </svg>
+            </div>
+            <div>
+              <div className='font-medium'>Thể loại</div>
+              <div className='text-xs opacity-75'>Quản lý thể loại của bài báo</div>
             </div>
           </NavLink>
         </nav>

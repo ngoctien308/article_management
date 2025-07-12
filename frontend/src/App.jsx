@@ -18,6 +18,7 @@ import Articles from './components/admin/Articles';
 import EditUser from './components/admin/EditUser';
 import AddUser from './components/admin/AddUser';
 import NotFound from './components/NotFound';
+import Categories from './components/admin/Categories';
 
 const App = () => {
   return (
@@ -50,6 +51,7 @@ const App = () => {
             <Route path='articles' element={<Articles />} />
             <Route path='articles/add' element={<AddArticle />} />
             <Route path='articles/edit/:id' element={<EditArticle />} />
+            <Route path='categories' element={<Categories />} />
           </Route>
         </Route>
 

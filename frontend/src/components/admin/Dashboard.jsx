@@ -6,16 +6,18 @@ const Dashboard = () => {
     totalUsers: 0,
     totalArticles: 0,
     totalComments: 0,
+    totalCategories: 0,
     topArticles: [],
     latestArticles: []
   });
 
   const fetchStats = async () => {
     try {
-      const [userRes, articleRes, commentRes] = await Promise.all([
+      const [userRes, articleRes, commentRes, categoryRes] = await Promise.all([
         axios.get('http://localhost:3000/api/users'),
         axios.get('http://localhost:3000/api/articles'),
-        axios.get('http://localhost:3000/api/comments')
+        axios.get('http://localhost:3000/api/comments'),
+        axios.get('http://localhost:3000/api/categories')
       ]);
 
       const { articles } = articleRes.data;
@@ -32,9 +34,11 @@ const Dashboard = () => {
         totalUsers: userRes.data.users.length,
         totalArticles: articles.length,
         totalComments: commentRes.data.comments.length,
+        totalCategories: categoryRes.data.categories.length,
         topArticles,
         latestArticles
       });
+
     } catch (err) {
       console.error('Lỗi khi lấy dữ liệu dashboard:', err);
     }
@@ -42,6 +46,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchStats();
+
   }, []);
 
   return (
@@ -83,7 +88,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-10'>
+        <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-10'>
           {/* Users Card */}
           <div className='group bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl border border-white/20 overflow-hidden transition-all duration-300 transform hover:-translate-y-1'>
             <div className='p-6 relative'>
@@ -254,6 +259,32 @@ const Dashboard = () => {
                     so với tháng trước
                   </span>
                 </div> */}
+              </div>
+            </div>
+          </div>
+
+          {/* Categories Card */}          
+          <div className="group bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl border border-white/20 overflow-hidden transition-all duration-300 transform hover:-translate-y-1">
+            <div className="p-6 relative">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-500/10 to-amber-600/10 rounded-full -translate-y-10 translate-x-10"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="p-3 rounded-xl bg-gradient-to-br from-orange-100 to-amber-200 group-hover:from-orange-200 group-hover:to-amber-300 transition-all duration-300">
+                    <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 11H5m14-7H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2zM9 7v10m6-10v10"
+                      />
+                    </svg>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-gray-500 font-medium">TỔNG SỐ</div>
+                    <div className="text-2xl font-bold text-orange-600">{stats.totalCategories}</div>
+                  </div>
+                </div>
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">Thể loại báo</h2>
               </div>
             </div>
           </div>
