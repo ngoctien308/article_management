@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
 import { MdDeleteOutline } from 'react-icons/md';
 import axios from "axios";
 import { confirmAlert } from "react-confirm-alert";
@@ -10,6 +9,8 @@ const Categories = () => {
     const [categories, setCategories] = useState([]);
     const [isAddMode, setIsAddMode] = useState(false);
     const [newCategory, setNewCategory] = useState('');
+    const [editMode, setEditMode] = useState(null); // id của category đang được chỉnh sửa
+    const [editedCategoryName, setEditedCategoryName] = useState('');
 
     const handleDeleteCategory = async (categoryId) => {
         confirmAlert({
@@ -100,6 +101,18 @@ const Categories = () => {
         } catch (error) {
             toast.error('Có lỗi xảy ra khi thêm thể loại.');
             console.error('Error adding category:', error);
+        }
+    }
+
+    const handleUpdateCategory = async (categoryId) => {
+        try {
+            await axios.patch(`http://localhost:3000/api/categories/${categoryId}`, { name: editedCategoryName });
+            toast.success('Cập nhật thể loại thành công.');
+            setEditMode(null);
+            fetchCategories();
+        } catch (error) {
+            toast.error('Có lỗi xảy ra khi cập nhật thể loại.');
+            console.error('Error updating category:', error);
         }
     }
 
@@ -235,37 +248,61 @@ const Categories = () => {
                                                 {category.id}
                                             </td>
                                             <td className='px-6 py-4 whitespace-nowrap'>
-                                                <span>{category.name}</span>
+                                                {editMode === category.id ? (
+                                                    <input
+                                                        value={editedCategoryName}
+                                                        onChange={(e) => setEditedCategoryName(e.target.value)}
+                                                        className="border border-gray-300 px-2 py-1 rounded-lg"
+                                                    />
+                                                ) : (
+                                                    <span>{category.name}</span>
+                                                )}
                                             </td>
                                             <td className='px-6 py-4 whitespace-nowrap'>
                                                 <div className='flex items-center space-x-2'>
-                                                    <button
-                                                        className='inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md'
-                                                    >
-                                                        <svg
-                                                            className='w-3 h-3 mr-1'
-                                                            fill='none'
-                                                            stroke='currentColor'
-                                                            viewBox='0 0 24 24'
-                                                        >
-                                                            <path
-                                                                strokeLinecap='round'
-                                                                strokeLinejoin='round'
-                                                                strokeWidth={2}
-                                                                d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
-                                                            />
-                                                        </svg>
-                                                        Chỉnh sửa
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            handleDeleteCategory(category.id);
-                                                        }}
-                                                        className='cursor-pointer inline-flex gap-1 items-center px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md'
-                                                    >
-                                                        <MdDeleteOutline />
-                                                        Xóa
-                                                    </button>
+                                                    {editMode === category.id ? (
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleUpdateCategory(category.id)}
+                                                                className='px-3 py-2 bg-green-500 text-white rounded-xl text-xs hover:bg-green-600 transition'
+                                                            >
+                                                                Lưu
+                                                            </button>
+                                                            <button
+                                                                onClick={() => setEditMode(null)}
+                                                                className='px-3 py-2 bg-gray-300 text-gray-800 rounded-xl text-xs hover:bg-gray-400 transition'
+                                                            >
+                                                                Hủy
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setEditMode(category.id);
+                                                                    setEditedCategoryName(category.name);
+                                                                }}
+                                                                className='inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md'
+                                                            >
+                                                                <svg className='w-3 h-3 mr-1' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                                                    <path
+                                                                        strokeLinecap='round'
+                                                                        strokeLinejoin='round'
+                                                                        strokeWidth={2}
+                                                                        d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
+                                                                    />
+                                                                </svg>
+                                                                Chỉnh sửa
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteCategory(category.id)}
+                                                                className='cursor-pointer inline-flex gap-1 items-center px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl text-xs font-medium transition-all duration-200 transform hover:scale-105 shadow-sm hover:shadow-md'
+                                                            >
+                                                                <MdDeleteOutline />
+                                                                Xóa
+                                                            </button>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </td>
                                         </tr>
